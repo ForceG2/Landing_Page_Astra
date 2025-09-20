@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+.title {
+  font-size: 60px;
+  color: #fdfdfd;
+  text-align: left;
+  margin-left: 50px;
+}
+.description {
+  font-size: 27px;
+  color: #ffffff;
+  max-width: 650px;
+  text-align: left;
+  margin-left: 50px;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
