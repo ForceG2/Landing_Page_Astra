@@ -7,17 +7,17 @@
 }
 
 .about-container .title {
-  margin-bottom: 40px; 
+  margin-bottom: 70px; 
   line-height: 1.2;
 }
 
-.underline {
-  width: 650px;
-  height: 2px;
-  background-color: #ffffff;
-  margin: 10px 20px 70px 50px;
-  border-radius: 2px;
+.about-container .description {
+  width: 734px;  
+  margin-bottom: 0px;
+  overflow: auto;     
+  box-sizing: border-box;
 }
+
 .scientist-image {
   width: 100%;      
   border-radius: 10px;
