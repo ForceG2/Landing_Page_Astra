@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Background } from './background/background';
-import { About } from './about/about';
+import { Trajectory } from './trajectory/trajectory';
 
 @Component({
   selector: 'app-root',
-  imports: [Background, About],
+  imports: [Background, Trajectory],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
