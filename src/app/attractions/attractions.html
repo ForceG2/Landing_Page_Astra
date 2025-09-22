@@ -6,15 +6,16 @@
   <div class="carousel">
     <button class="nav prev" type="button" aria-label="Anterior" (click)="scrollLeft()">&#10094;</button>
 
-    <div #track class="track" role="list">
-      <article class="card" role="listitem" *ngFor="let c of cards">
-        <div class="thumb">
-          <img [src]="c.image" [alt]="c.caption">
-        </div>
-        <p class="caption">{{ c.caption }}</p>
-      </article>
+    <div class="track-container">
+      <div #track class="track" role="list">
+        <article class="card" role="listitem" *ngFor="let c of cards">
+          <div class="thumb">
+            <img [src]="c.image" [alt]="c.caption">
+          </div>
+          <p class="caption">{{ c.caption }}</p>
+        </article>
+      </div>
     </div>
-
     <button class="nav next" type="button" aria-label="Próximo" (click)="scrollRight()">&#10095;</button>
   </div>
 </section>
