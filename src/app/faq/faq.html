@@ -2,12 +2,20 @@
   <h2 class="title">Perguntas Frequentes</h2>
 
   <div class="faq-list">
-    <details class="faq-item" *ngFor="let f of faqs">
+    <details
+      #item
+      class="faq-item"
+      *ngFor="let f of faqs; let i = index"
+      (toggle)="onToggle(i, $event)"
+    >
       <summary class="faq-question">
         {{ f.q }}
         <span class="chevron">▾</span>
       </summary>
-      <p class="faq-answer">{{ f.a }}</p>
+
+      <div class="faq-answer">
+        <p>{{ f.a }}</p>
+      </div>
     </details>
   </div>
 </section>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChildren, QueryList } from '@angular/core';
 
 @Component({
   selector: 'app-faq',
@@ -9,6 +9,8 @@ import { Component } from '@angular/core';
   styleUrl: './faq.css',
 })
 export class Faq {
+  @ViewChildren('item') items!: QueryList<ElementRef<HTMLDetailsElement>>;
+
   faqs = [
     { q: 'É seguro viajar para o espaço?', a: 'A segurança é nossa prioridade máxima. Nossas naves passam por rigorosos testes e manutenções, e nossa tripulação é altamente treinada para garantir uma viagem segura.' },
     { q: 'Preciso de treinamento especial para participar?', a: 'Sim, todos os participantes passam por um treinamento preparatório que cobre todos os aspectos da viagem, desde procedimentos de segurança até como aproveitar ao máximo a experiência.' },
@@ -17,4 +19,13 @@ export class Faq {
     { q: 'Qualquer pessoa pode participar?', a: 'Há requisitos básicos de saúde e idade mínima. Fazemos uma avaliação simples.' },
     { q: 'Onde acontece o lançamento da nave?', a: 'No nosso espaçoporto parceiro; o transporte está incluso.' },
   ];
+
+  onToggle(index: number, ev: Event) {
+    const opened = (ev.target as HTMLDetailsElement).open;
+    if (!opened) return;
+
+    this.items.forEach((ref, i) => {
+      if (i !== index) ref.nativeElement.open = false;
+    });
+  }
 }
