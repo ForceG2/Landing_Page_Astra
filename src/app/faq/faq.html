@@ -1,0 +1,13 @@
+<section class="faq-container">
+  <h2 class="title">Perguntas Frequentes</h2>
+
+  <div class="faq-list">
+    <details class="faq-item" *ngFor="let f of faqs">
+      <summary class="faq-question">
+        {{ f.q }}
+        <span class="chevron">▾</span>
+      </summary>
+      <p class="faq-answer">{{ f.a }}</p>
+    </details>
+  </div>
+</section>
