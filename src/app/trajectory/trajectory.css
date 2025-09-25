@@ -11,6 +11,7 @@
     color: #ffffff;
     margin-top: 60px;
     text-align: center;
+    margin-right: 50px;
 }
 
 .trajectory-subtitle{
@@ -39,13 +40,11 @@
   font-family: Arial, sans-serif;
 }
 
-/* Tamanhos maiores */
 .earth { width: 180px; }
 .moon { width: 130px; }
 .space_station { width: 170px; }
 .mars { width: 200px; }
 
-/* Planetas reposicionados */
 .earth { top: 55%; left: 18%; }
 .earth-label { top: 74%; left: 22.8%; font-size: 16px; }
 
