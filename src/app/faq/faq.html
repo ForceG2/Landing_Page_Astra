@@ -1,21 +1,24 @@
 <section class="faq-container">
   <h2 class="title">Perguntas Frequentes</h2>
-
+  
   <div class="faq-list">
-    <details
-      #item
-      class="faq-item"
-      *ngFor="let f of faqs; let i = index"
-      (toggle)="onToggle(i, $event)"
+    <div 
+      class="faq-item" 
+      [class.open]="openIndex === i"
+      *ngFor="let faq of faqs; let i = index"
     >
-      <summary class="faq-question">
-        {{ f.q }}
+      <button 
+        class="faq-question" 
+        (click)="toggle(i)"
+        [attr.aria-expanded]="openIndex === i"
+      >
+        {{ faq.q }}
         <span class="chevron">▾</span>
-      </summary>
-
-      <div class="faq-answer">
-        <p>{{ f.a }}</p>
+      </button>
+      
+      <div class="faq-answer" [class.show]="openIndex === i">
+        <p>{{ faq.a }}</p>
       </div>
-    </details>
+    </div>
   </div>
 </section>

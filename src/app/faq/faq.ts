@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-faq',
@@ -9,7 +9,7 @@ import { Component, ElementRef, ViewChildren, QueryList } from '@angular/core';
   styleUrl: './faq.css',
 })
 export class Faq {
-  @ViewChildren('item') items!: QueryList<ElementRef<HTMLDetailsElement>>;
+  openIndex: number | null = null;
 
   faqs = [
     { q: 'É seguro viajar para o espaço?', a: 'A segurança é nossa prioridade máxima. Nossas naves passam por rigorosos testes e manutenções, e nossa tripulação é altamente treinada para garantir uma viagem segura.' },
@@ -20,12 +20,7 @@ export class Faq {
     { q: 'Onde acontece o lançamento da nave?', a: 'No nosso espaçoporto parceiro; o transporte está incluso.' },
   ];
 
-  onToggle(index: number, ev: Event) {
-    const opened = (ev.target as HTMLDetailsElement).open;
-    if (!opened) return;
-
-    this.items.forEach((ref, i) => {
-      if (i !== index) ref.nativeElement.open = false;
-    });
+  toggle(index: number): void {
+    this.openIndex = this.openIndex === index ? null : index;
   }
 }
