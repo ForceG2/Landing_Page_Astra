@@ -47,7 +47,9 @@ export class Trajectory implements AfterViewInit {
       const dy = targetY - startY;
 
       const angle = Math.atan2(dy, dx) * (20 / Math.PI);
-      rocket.style.transform = dx < 0 ? `scaleX(-1) rotate(${angle}deg)` : `scaleX(1) rotate(${angle}deg)`;
+      const anguloDestino = Math.atan2(dy, dx) * (90 / Math.PI);
+      rocket.style.transform = `rotate(${anguloDestino}deg)`;
+
 
       function animarReta(callback?: () => void) {
         progress += 0.018;
@@ -87,7 +89,7 @@ export class Trajectory implements AfterViewInit {
           rocket.style.top = currentY + "px";
 
           const currentAngle = startAngle + (rotacaoFinal - startAngle) * step;
-          rocket.style.transform = dx < 0 ? `scaleX(-1) rotate(${currentAngle}deg)` : `scaleX(1) rotate(${currentAngle}deg)`;
+          rocket.style.transform = `rotate(${currentAngle}deg)`;
 
           if (step < 1) {
             requestAnimationFrame(animar);
