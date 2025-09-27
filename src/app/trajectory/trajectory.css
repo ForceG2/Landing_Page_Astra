@@ -46,16 +46,16 @@
 .mars { width: 200px; }
 
 .earth { top: 55%; left: 18%; }
-.earth-label { top: 74%; left: 22.8%; font-size: 16px; }
+.earth-label { top: 70%; left: 21.8%; font-size: 16px; }
 
 .moon { top: 25%; left: 38%; }
-.moon-label { top: 38%; left: 41.6%; font-size: 15px; }
+.moon-label { top: 36%; left: 41%; font-size: 15px; }
 
 .space_station { top: 65%; left: 50%; }
-.space_station-label { top: 63%; left: 52%; font-size: 15px; }
+.space_station-label { top: 63%; left: 51%; font-size: 15px; }
 
 .mars { top: 40%; left: 73%; }
-.mars-label { top: 61%; left: 78.4%; font-size: 16px; }
+.mars-label { top: 57.2%; left: 77.5%; font-size: 16px; }
 
 .rocket {
   width: 60px;
