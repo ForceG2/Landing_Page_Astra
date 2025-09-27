@@ -33,9 +33,11 @@ export class Trajectory implements AfterViewInit {
 
       const destinoRect = destino.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
-      const popupImage = document.getElementById("popup-image") as HTMLImageElement;
-      const targetX = destinoRect.left - containerRect.left + destinoRect.width / 2 - rocket.offsetWidth / 2;
-      const targetY = destinoRect.top - containerRect.top + destinoRect.height / 2 - rocket.offsetHeight / 2;
+
+      const distanciaSegura = 50;
+
+      const targetX = destinoRect.left - containerRect.left - distanciaSegura + 20;
+      const targetY = destinoRect.top - containerRect.top + destinoRect.height / 2 - rocket.offsetHeight / 2 - 10;
 
       let startX = rocket.offsetLeft;
       let startY = rocket.offsetTop;
@@ -45,37 +47,78 @@ export class Trajectory implements AfterViewInit {
       const dy = targetY - startY;
 
       const angle = Math.atan2(dy, dx) * (20 / Math.PI);
+      rocket.style.transform = dx < 0 ? `scaleX(-1) rotate(${angle}deg)` : `scaleX(1) rotate(${angle}deg)`;
 
-      if (dx < 0) {
-        rocket.style.transform = `scaleX(-1) rotate(${angle}deg)`;
-      } else {
-        rocket.style.transform = `scaleX(1) rotate(${angle}deg)`;
-      }
-
-      function animar() {
+      function animarReta(callback?: () => void) {
         progress += 0.018;
-        if (progress >= 1) progress = 1;
+        if (progress > 1) progress = 1;
 
-        const currentX = startX + (targetX - startX) * progress;
-        const currentY = startY + (targetY - startY) * progress;
+        const currentX = startX + dx * progress;
+        const currentY = startY + dy * progress;
 
         rocket.style.left = currentX + "px";
         rocket.style.top = currentY + "px";
 
         if (progress < 1) {
-          requestAnimationFrame(animar);
-        } else {
-          const info = planetInfo[alvo];
-          if (info) {
-            popupTitle.textContent = info.title;
-            popupDescription.textContent = info.description;
-            popupImage.src = info.image;
-            popup.style.display = "flex";
-          }
+          requestAnimationFrame(() => animarReta(callback));
+        } else if (callback) {
+          callback();
         }
       }
 
-      animar();
+      function animarEstacionamento() {
+        const recuo = 10;    
+        const abaixar = 20;   
+        const rotacaoFinal = -47;
+        let step = 0;
+
+        const startPosX = rocket.offsetLeft;
+        const startPosY = rocket.offsetTop;
+        const startAngle = dx < 0 ? -angle : angle; 
+
+        function animar() {
+          step += 0.04;
+          if (step > 1) step = 1;
+
+          const currentX = startPosX - recuo * Math.sin(Math.PI * step) * step;
+          const currentY = startPosY + abaixar * Math.sin(Math.PI * step / 2);
+
+          rocket.style.left = currentX + "px";
+          rocket.style.top = currentY + "px";
+
+          const currentAngle = startAngle + (rotacaoFinal - startAngle) * step;
+          rocket.style.transform = dx < 0 ? `scaleX(-1) rotate(${currentAngle}deg)` : `scaleX(1) rotate(${currentAngle}deg)`;
+
+          if (step < 1) {
+            requestAnimationFrame(animar);
+          } else {
+            const info = planetInfo[alvo];
+            if (info) {
+              popupTitle.textContent = info.title;
+              popupDescription.textContent = info.description;
+              const popupImage = document.getElementById("popup-image") as HTMLImageElement;
+              popupImage.src = info.image;
+              popup.style.display = "flex";
+            }
+
+            let floatStep = 0;
+            function flutuar() {
+              floatStep += 0.04;
+              const offsetY = 2 * Math.sin(floatStep * Math.PI); 
+              const offsetX = 2 * Math.sin(floatStep * Math.PI/2); 
+              rocket.style.left = currentX + offsetX + "px";
+              rocket.style.top = currentY + offsetY + "px";
+              requestAnimationFrame(flutuar);
+            }
+
+            flutuar();
+          }
+        }
+
+        animar();
+      }
+
+      animarReta(animarEstacionamento);
     };
 
     document.querySelector(".moon")?.addEventListener("click", () => moverFoguete(".moon"));
