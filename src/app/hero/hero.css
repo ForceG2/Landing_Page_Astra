@@ -1,32 +1,36 @@
-.about-container {
-  padding: 80px 10px;
-  padding-left: 150px;
-  gap: 50px;
+.hero-container {
   display: flex;
-  align-items: flex-start;              
+  align-items: flex-start; 
+  position: relative; 
+  padding: 160px 0 0 150px;
+  min-height: 600px; 
 }
 
-.about-container .title {
-  margin-bottom: 70px; 
-  line-height: 1.2;
+.text-container {
+  flex: 1; 
+  z-index: 2; 
 }
 
-.about-container .description {
+.description {
   width: 734px;  
   margin-bottom: 0px;
   overflow: auto;     
   box-sizing: border-box;
 }
 
-.scientist-image {
-  width: 100%;      
-  border-radius: 10px;
-}
-
-.text-container {
-  flex: 0.8;          
-}
-
 .image-container {
-  flex: 0 0 500px;      
+  position: absolute;
+  top: -120px;     
+  right: -150px;   
+  width: 850px;      
+  z-index: 1;       
 }
+
+.earth-image {
+  width: 100%;       
+  height: auto;     
+}
+
+
+
+ 
