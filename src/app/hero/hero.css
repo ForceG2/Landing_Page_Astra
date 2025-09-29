@@ -23,14 +23,38 @@
   top: -120px;     
   right: -150px;   
   width: 850px;      
-  z-index: 1;       
+  z-index: 1;    
+  animation: floatY 13s ease-in-out infinite;   
 }
 
 .earth-image {
   width: 100%;       
-  height: auto;     
+  height: auto; 
+  animation: floatX 19s ease-in-out infinite;
 }
 
+@keyframes floatY {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
 
+@keyframes floatX {
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
 
  
