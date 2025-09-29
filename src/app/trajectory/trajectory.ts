@@ -132,7 +132,7 @@ export class Trajectory implements AfterViewInit {
 
             let floatStep = 0;
             function flutuar() {
-              floatStep += 0.04;
+              floatStep += 0.03;
               const offsetY = 2 * Math.sin(floatStep * Math.PI);
               const offsetX = 2 * Math.sin((floatStep * Math.PI) / 2);
               rocket.style.left = currentX + offsetX + 'px';
@@ -162,6 +162,25 @@ export class Trajectory implements AfterViewInit {
     document.querySelector('.earth')?.addEventListener('click', () => {
       moverFoguete('.earth');
     });
+    const atualizarLabels = () => {
+      const planetas = ['earth', 'moon', 'space_station', 'mars'];
+
+      planetas.forEach((planeta) => {
+        const planetaEl = document.querySelector(`.${planeta}`) as HTMLElement;
+        const labelEl = document.querySelector(`.${planeta}-label`) as HTMLElement;
+        if (planetaEl && labelEl) {
+          const rect = planetaEl.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          const centerX = rect.left - containerRect.left - 2 + rect.width / 2;
+          const centerY = rect.top - containerRect.top - 2; // 20px abaixo do planeta
+          labelEl.style.left = `${centerX}px`;
+          labelEl.style.top = `${centerY}px`;
+        }
+      });
+    };
+
+    atualizarLabels();
+    window.addEventListener('resize', atualizarLabels);
 
     closePopup?.addEventListener('click', () => {
       popup.style.display = 'none';

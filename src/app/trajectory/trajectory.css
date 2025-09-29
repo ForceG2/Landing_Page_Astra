@@ -38,7 +38,10 @@
   font-size: 14px;
   text-align: center;
   font-family: Arial, sans-serif;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
+
 
 .earth { width: 180px; }
 .moon { width: 130px; }
@@ -46,16 +49,9 @@
 .mars { width: 200px; }
 
 .earth { top: 55%; left: 18%; }
-.earth-label { top: 70%; left: 21.8%; font-size: 16px; }
-
 .moon { top: 25%; left: 38%; }
-.moon-label { top: 36%; left: 41%; font-size: 15px; }
-
 .space_station { top: 65%; left: 50%; }
-.space_station-label { top: 63%; left: 51%; font-size: 15px; }
-
 .mars { top: 40%; left: 73%; }
-.mars-label { top: 57.2%; left: 77.5%; font-size: 16px; }
 
 .rocket {
   width: 60px;
