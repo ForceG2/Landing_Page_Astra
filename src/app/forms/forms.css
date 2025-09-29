@@ -2,33 +2,33 @@
 
 .forms-container {
   padding: 80px 10px;
-  padding-left: 125px;
   display: flex;
+  padding-left: 80px;
 }
 
 .text-container {
-  flex: 0.85;          
+  flex: 0.85;
 }
 
 .forms-container .title {
   font-family: 'Poppins', sans-serif;
   margin-top: 0px;
   line-height: 1.2;
-  font-size: 84px;
-  width: 875px;
+  font-size: 68px;
+  width: 675px;
 }
 
 .forms-container .subtitle {
   margin-top: 150px;
   margin-bottom: -3px;
   width: 734px;
-  font-size: 30px;
+  font-size: 20px;
   margin-left: 50px;
   color: rgb(255, 255, 255);
 }
 
 .form-box {
-  flex: 0 0 475px;
+  flex: 0 0 420px;
   background: #fff;
   padding: 40px;
   border-radius: 12px;
@@ -41,10 +41,15 @@
   text-align: center;
 }
 
+.form-box p {
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .form-box form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .form-box input {
@@ -61,21 +66,21 @@
 .checkbox-container {
   display: flex;
   align-items: center;
-  gap: 10px; 
+  gap: 10px;
   margin-top: 15px;
   font-size: 14px;
 }
 
 .checkbox-container {
   display: flex;
-  align-items: center; 
-  gap: 10px;          
+  align-items: center;
+  gap: 10px;
   margin-top: 15px;
   font-size: 14px;
   color: #333;
 }
 
-.checkbox-container input[type="checkbox"] {
+.checkbox-container input[type='checkbox'] {
   width: 18px;
   height: 18px;
   cursor: pointer;
@@ -83,8 +88,8 @@
 }
 
 .checkbox-container label {
-  display: inline-block; 
-  cursor: pointer;       
+  display: inline-block;
+  cursor: pointer;
 }
 
 .form-box button {
@@ -100,16 +105,15 @@
   cursor: pointer;
 }
 
-input[type="date"] {
+input[type='date'] {
   padding: 12px 15px;
   border-radius: 12px;
   font-size: 16px;
   font-family: 'Poppins', sans-serif;
   transition: 0.3s;
-  appearance: none; 
+  appearance: none;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
+input[type='date']::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
-
