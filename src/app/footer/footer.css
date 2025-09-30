@@ -58,14 +58,24 @@
 .contact-line {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   white-space: nowrap;
 }
+
+.contact-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
 .contact-link {
   color: #ffffff;
   text-decoration: none;
   border-bottom: 1px solid transparent;
+  transition: border-bottom-color 120ms ease;
 }
+
 .contact-link:hover {
   border-bottom-color: #ffffff;
 }
