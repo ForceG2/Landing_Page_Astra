@@ -2,7 +2,7 @@
   background: #000020;
   color: #ffffff;
   width: 100%;
-  border-top: 1px solid #ffffff; 
+  border-top: 1px solid #ffffff;
 }
 
 .footer-content {
@@ -22,15 +22,25 @@
 }
 
 .icon {
-  display: inline-block;
-  width: 28px;
-  height: 28px;
-  border: 2px solid #ffffff;
-  border-radius: 6px;
-  opacity: 0.95;
-  transition: transform 120ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #ffffff;
+  opacity: 0.9;
+  transition: opacity 120ms ease, transform 120ms ease;
 }
-.icon:hover { transform: translateY(-1px); }
+
+.icon:hover { 
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.icon svg {
+  width: 24px;
+  height: 24px;
+}
 
 .copy {
   text-align: center;
