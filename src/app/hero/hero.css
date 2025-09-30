@@ -1,36 +1,39 @@
 .hero-container {
   display: flex;
-  align-items: flex-start; 
-  position: relative; 
+  align-items: flex-start;
+  position: relative;
   padding: 160px 0 0 150px;
-  min-height: 600px; 
-  overflow-x: hidden;
+  min-height: 600px;
+  overflow: hidden;
 }
 
 .text-container {
-  flex: 1; 
-  z-index: 2; 
+  flex: 1;
+  z-index: 2;
+  max-width: 734px;
 }
 
 .description {
-  width: 734px;  
+  width: 100%;  
   margin-bottom: 0px;
-  overflow: auto;     
+  overflow: auto;    
   box-sizing: border-box;
 }
 
 .image-container {
   position: absolute;
-  top: -120px;     
-  right: -150px;   
-  width: 850px;      
+  top: -12vh;    
+  right: -10vw;
+  width: 55vw;
+  min-width: 700px;
+  max-width: 1100px;
   z-index: 1;    
-  animation: floatY 9s ease-in-out infinite;   
+  animation: floatY 9s ease-in-out infinite;  
 }
 
 .earth-image {
-  width: 100%;       
-  height: auto; 
+  width: 100%;      
+  height: auto;
   animation: floatX 15s ease-in-out infinite;
 }
 
@@ -57,5 +60,3 @@
     transform: translateX(0px);
   }
 }
-
- 
