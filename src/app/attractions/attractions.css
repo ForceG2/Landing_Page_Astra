@@ -36,7 +36,13 @@
   padding: 12px 12px 16px;
   background: rgba(12, 20, 35, 0.6);
   border: 2px solid rgba(0, 150, 255, 0.6);
-  box-shadow: 0 0 0 4px rgba(0, 150, 255, 0.15) inset
+  box-shadow: 0 0 0 4px rgba(0, 150, 255, 0.15) inset;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 4px 4px rgba(0, 200, 255, 0.4);
 }
 
 .thumb {
