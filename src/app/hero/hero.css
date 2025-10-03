@@ -27,36 +27,37 @@
   width: 55vw;
   min-width: 700px;
   max-width: 1100px;
-  z-index: 1;    
-  animation: floatY 9s ease-in-out infinite;  
+  z-index: 1;
+  animation: floatY 9s ease-in-out infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 .earth-image {
   width: 100%;      
   height: auto;
+  display: block;
   animation: floatX 15s ease-in-out infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 @keyframes floatY {
-  0% {
-    transform: translateY(0px);
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-15px);
-  }
-  100% {
-    transform: translateY(0px);
+    transform: translate3d(0, -15px, 0);
   }
 }
 
 @keyframes floatX {
-  0% {
-    transform: translateX(0px);
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateX(20px);
-  }
-  100% {
-    transform: translateX(0px);
+    transform: translate3d(20px, 0, 0);
   }
 }
