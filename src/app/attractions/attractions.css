@@ -25,7 +25,8 @@
   gap: 32px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding: 8px 56px
+  padding: 8px 56px;
+  scroll-behavior: smooth
 }
 
 .track::-webkit-scrollbar{ display: none }
