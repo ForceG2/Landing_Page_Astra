@@ -61,3 +61,22 @@
     transform: translate3d(20px, 0, 0);
   }
 }
+
+@media (min-height: 900px) {
+  .image-container {
+    top: -25vh;
+    right: -7vw;
+  }
+}
+
+@media (min-height: 1080px) {
+  .image-container {
+    top: 0vh;
+  }
+}
+
+@media (max-height: 768px) {
+  .image-container {
+    top: -20vh;
+  }
+}
