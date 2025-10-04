@@ -4,21 +4,49 @@
     <h2 class="title">O próximo viajante espacial pode ser você!</h2>
   </div>
   <div class="form-box">
-    <form>
-      <h3>Inscreva-se</h3>
-      <p>Nome completo</p>
-      <input type="text" placeholder="Nome completo" required />
-      <p>E-mail</p>
-      <input type="email" placeholder="email@exemplo.com" required />
-      <p>Telefone</p>
-      <input type="tel" placeholder="DDD + Telefone" required />
-      <p>Data de nascimento</p>
-      <input type="date" required />
-      <p class="checkbox-container">
-        <input type="checkbox" id="termos" required />
+    <div *ngIf="toastVisible" class="toast">
+      Inscrição realizada com sucesso!
+    </div>
+  <form [formGroup]="formData" (ngSubmit)="submitForm()">
+    <h3>Inscreva-se</h3>
+
+    <p>Nome completo</p>
+    <input formControlName="nome" type="text" placeholder="Nome completo" required />
+    <div class="error" *ngIf="formData.get('nome')?.touched && formData.get('nome')?.invalid">
+      Nome é obrigatório.
+    </div>
+
+    <p>E-mail</p>
+    <input formControlName="email" type="email" placeholder="email@exemplo.com" required />
+    <div class="error" *ngIf="formData.get('email')?.touched && formData.get('email')?.invalid">
+      <span *ngIf="formData.get('email')?.errors?.['required']">Email é obrigatório.</span>
+      <span *ngIf="formData.get('email')?.errors?.['email']">Email inválido.</span>
+    </div>
+
+    <p>Telefone</p>
+    <input formControlName="telefone" type="tel" placeholder="DDD + Telefone" required />
+    <div class="error" *ngIf="formData.get('telefone')?.touched && formData.get('telefone')?.invalid">
+      Telefone é obrigatório.
+    </div>
+
+    <p>Data de nascimento</p>
+    <input formControlName="dataNascimento" type="date" required />
+    <div class="error" *ngIf="formData.get('dataNascimento')?.touched && formData.get('dataNascimento')?.invalid">
+      Data de nascimento é obrigatória.
+    </div>
+
+    <div class="checkbox-container">
+      <div class="checkbox-label">
+        <input formControlName="termos" type="checkbox" id="termos" required />
         <label for="termos">Concordo com os termos e condições</label>
-      </p>
-      <button type="submit">Quero ir ao espaço!</button>
-    </form>
+      </div>
+      <div class="error" *ngIf="formData.get('termos')?.touched && formData.get('termos')?.invalid">
+        Você precisa aceitar os termos.
+      </div>
+    </div>
+
+
+    <button type="submit" [disabled]="formData.invalid">Quero ir ao espaço!</button>
+  </form>
   </div>
 </section>
