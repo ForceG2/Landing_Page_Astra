@@ -7,7 +7,7 @@
 }
 
 .text-container {
-  flex: 0.85;
+  flex: 0.75;
 }
 
 .forms-container .title {
@@ -65,7 +65,7 @@
 
 .checkbox-container {
   display: flex;
-  flex-direction: column; /* empilha o checkbox-label e o erro */
+  flex-direction: column; 
   align-items: flex-start;
   margin-top: 15px;
   font-size: 14px;
@@ -74,7 +74,7 @@
 
 .checkbox-label {
   display: flex;
-  align-items: center; /* checkbox e label lado a lado */
+  align-items: center; 
   gap: 10px;
 }
 
@@ -149,4 +149,96 @@ input[type='date']::-webkit-calendar-picker-indicator {
   font-size: 14px;     
   margin-top: 4px;     
   display: block;    
+}
+
+@media (max-width: 1024px) {
+  .forms-container {
+    flex-direction: column; 
+    padding: 40px 20px;
+  }
+
+  .text-container {
+    flex: 1;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .forms-container .title {
+    font-size: 48px;
+    width: 100%;
+  }
+
+  .forms-container .subtitle {
+    width: 100%;
+    font-size: 18px;
+    margin-left: 0;
+    margin-top: 20px;
+  }
+
+  .form-box {
+    flex: 1 1 100%;
+    width: 100%;
+    padding: 30px;
+    margin: 0 auto;
+  }
+
+  .form-box button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .forms-container {
+    padding: 30px 15px;
+  }
+
+  .forms-container .title {
+    font-size: 36px;
+    line-height: 1.2;
+  }
+
+  .forms-container .subtitle {
+    font-size: 16px;
+    margin-top: 15px;
+  }
+
+  .form-box {
+    padding: 20px;
+  }
+
+  .form-box input,
+  input[type='date'] {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .form-box button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .forms-container .title {
+    font-size: 28px;
+  }
+
+  .forms-container .subtitle {
+    font-size: 14px;
+  }
+
+  .form-box h3 {
+    font-size: 20px;
+  }
+
+  .form-box input,
+  input[type='date'] {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .form-box button {
+    font-size: 14px;
+    padding: 10px;
+  }
 }
