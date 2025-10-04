@@ -33,5 +33,5 @@ build/
 .vscode/
 
 # Ignorar arquivo de segredos (email)
-application-secrets.properties
+application-secret.properties
 
