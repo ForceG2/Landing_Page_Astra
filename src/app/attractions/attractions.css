@@ -1,0 +1,87 @@
+.attractions {
+  padding: 80px 32px;
+  position: relative
+}
+
+.attractions-title {
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+.carousel {
+  position: relative;
+  margin-bottom: 64px
+}
+
+.track-container {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 340px;
+  gap: 32px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 8px 56px
+}
+
+.track::-webkit-scrollbar{ display: none }
+
+.card {
+  scroll-snap-align: center;
+  border-radius: 16px;
+  padding: 12px 12px 16px;
+  background: rgba(12, 20, 35, 0.6);
+  border: 2px solid rgba(0, 150, 255, 0.6);
+  box-shadow: 0 0 0 4px rgba(0, 150, 255, 0.15) inset
+}
+
+.thumb {
+  width: 100%;
+  height: clamp(180px, 60dvh, 380px);
+  border-radius: 12px;
+  overflow: hidden
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  min-height: 28px;
+  line-height: 1.3;
+  margin: 18px 0 0
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .5);
+  background: rgba(0, 0, 0, .3);
+  color: #fff;
+  cursor: pointer;
+  z-index: 1
+}
+
+.prev {
+  left: 0
+}
+
+.next {
+  right: 0
+}
