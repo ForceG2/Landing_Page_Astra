@@ -20,13 +20,13 @@ export class Trajectory implements AfterViewInit {
       '.earth': {
         title: 'Terra',
         description:
-          'Começamos nossa jornada pelo planeta azul, apreciando oceanos, florestas e cidades vibrantes – o ponto de partida perfeito para nossa viagem.',
+          'Começamos nossa jornada pelo planeta azul, apreciando oceanos, florestas e cidades vibrantes.',
         image: '/assets/images/card_earth.jpeg',
       },
       '.moon': {
         title: 'Lua',
         description:
-          'O satélite da Terra nos recebe com sua superfície prateada e crateras majestosas – uma vista inesquecível que vai te fazer sentir flutuando entre estrelas.',
+          'O satélite da Terra nos recebe com sua superfície prateada e crateras majestosas, uma vista inesquecível que vai te fazer sentir flutuando entre estrelas.',
         image: '/assets/images/card_moon.jpeg',
       },
       '.space_station': {
@@ -38,7 +38,7 @@ export class Trajectory implements AfterViewInit {
       '.mars': {
         title: 'Marte',
         description:
-          'O planeta vermelho surge à frente, com suas paisagens áridas e montanhas imponentes – uma experiência única que promete emocionar todos os exploradores do espaço.',
+          'O planeta vermelho surge à frente, com suas paisagens áridas e montanhas imponentes, uma experiência única que promete emocionar todos os exploradores do espaço.',
         image: '/assets/images/card_mars.jpeg',
       },
     };
