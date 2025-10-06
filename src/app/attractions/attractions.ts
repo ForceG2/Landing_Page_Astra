@@ -23,31 +23,34 @@ export class Attractions implements AfterViewInit {
   
   cards: Card[] = [];
   private cardWidth = 340 + 32; // largura do card + gap
+  private isAdjusting = false;
   
   ngAfterViewInit() {
-    // cria cópias suficientes para preencher a tela e ter buffer
+    // cria cópias suficientes para ter buffer nos dois lados
     this.cards = [
+      ...this.originalCards,
       ...this.originalCards,
       ...this.originalCards,
       ...this.originalCards,
       ...this.originalCards
     ];
     
-    // inicia no segundo conjunto
+    // unicia no meio (terceiro conjunto)
     setTimeout(() => {
-      this.track.nativeElement.scrollLeft = this.cardWidth * this.originalCards.length;
+      this.track.nativeElement.scrollLeft = this.cardWidth * this.originalCards.length * 2;
     }, 0);
   }
   
   scrollLeft() {
+    if (this.isAdjusting) return;
+    
     const el = this.track.nativeElement;
     const currentScroll = el.scrollLeft;
-    const targetScroll = currentScroll - this.cardWidth;
     
     // se está muito no início, adiciona cards no começo
-    if (currentScroll < this.cardWidth * this.originalCards.length) {
+    if (currentScroll < this.cardWidth * this.originalCards.length * 1.5) {
       this.prependCards();
-      el.scrollLeft = currentScroll + (this.cardWidth * this.originalCards.length);
+      return;
     }
     
     el.scrollBy({
@@ -57,13 +60,16 @@ export class Attractions implements AfterViewInit {
   }
   
   scrollRight() {
+    if (this.isAdjusting) return;
+    
     const el = this.track.nativeElement;
     const currentScroll = el.scrollLeft;
     const maxScroll = el.scrollWidth - el.clientWidth;
     
     // se está muito no final, adiciona cards no final
-    if (currentScroll > maxScroll - (this.cardWidth * this.originalCards.length)) {
+    if (currentScroll > maxScroll - (this.cardWidth * this.originalCards.length * 1.5)) {
       this.appendCards();
+      return;
     }
     
     el.scrollBy({
@@ -73,21 +79,48 @@ export class Attractions implements AfterViewInit {
   }
   
   private prependCards() {
+    this.isAdjusting = true;
     const el = this.track.nativeElement;
     const currentScroll = el.scrollLeft;
+    
+    // desabilita scroll suave temporariamente
+    el.style.scrollBehavior = 'auto';
     
     // adiciona cards no início
     this.cards = [...this.originalCards, ...this.cards];
     
-    // ajusta a posição do scroll para compensar os novos cards
+    // ajusta a posição do scroll instantaneamente
     setTimeout(() => {
       el.scrollLeft = currentScroll + (this.cardWidth * this.originalCards.length);
+      
+      // reabilita scroll suave
+      setTimeout(() => {
+        el.style.scrollBehavior = 'smooth';
+        this.isAdjusting = false;
+        
+        // scroll para a esquerda
+        el.scrollBy({
+          left: -this.cardWidth,
+          behavior: 'smooth',
+        });
+      }, 50);
     }, 0);
   }
   
   private appendCards() {
+    this.isAdjusting = true;
+    
     // adiciona cards no final
     this.cards = [...this.cards, ...this.originalCards];
+    
+    // aguarda o DOM atualizar e então faz o scroll
+    setTimeout(() => {
+      this.isAdjusting = false;
+      this.track.nativeElement.scrollBy({
+        left: this.cardWidth,
+        behavior: 'smooth',
+      });
+    }, 50);
   }
   
   private getScrollAmount(): number {
