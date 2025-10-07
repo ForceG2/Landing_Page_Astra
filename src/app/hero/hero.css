@@ -72,3 +72,23 @@
     padding-bottom: 5vh;
   }
 }
+
+@media (max-width: 768px) {
+  .hero-container .title { font-size: 1.5rem; }
+  .hero-container .description { font-size: 0.9rem; }
+}
+
+@media (min-height: 1440px) {
+  .hero-container .title { font-size: 2.5rem; }
+  .hero-container .description { font-size: 1.1rem; }
+}
+
+@media (min-width: 2560px) {
+  .hero-container .title { font-size: 3rem; }
+  .hero-container .description { font-size: 1.2rem; }
+}
+
+@media (min-width: 3840px) {
+  .hero-container .title { font-size: 4rem; }
+  .hero-container .description { font-size: 1.5rem; }
+}
