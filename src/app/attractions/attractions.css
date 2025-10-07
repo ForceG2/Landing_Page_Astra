@@ -221,7 +221,7 @@
 
 @media (max-width: 768px) {
   .attractions { padding: 40px 16px }
-  .attractions-title { font-size: 1.8rem; padding-bottom: 20px }
+  .attractions-title { font-size: 2.1rem; padding-bottom: 20px }
   .carousel { margin-bottom: 32px }
   .track {
     grid-auto-columns: 280px;
@@ -241,7 +241,7 @@
     padding: 8px 48px;
     --thumb-h: clamp(170px, 55dvh, 340px)
   }
-  .attractions-title { font-size: 2.2rem}
+  .attractions-title { font-size: 2.4rem}
 }
 
 @media (max-width: 1366px) {
