@@ -121,7 +121,6 @@ export class Attractions implements OnInit, AfterViewInit {
   }
 
   // lógica de scroll (click)
-
   scrollLeft(): void {
     this.scrollByAmount(-this.cardWidth);
   }
@@ -131,7 +130,6 @@ export class Attractions implements OnInit, AfterViewInit {
   }
   
   // lógica de scroll (hold) 
-
   startAutoScroll(direction: 'left' | 'right'): void {
     if (this.isAdjustingTrack) return;
 
@@ -157,7 +155,6 @@ export class Attractions implements OnInit, AfterViewInit {
     if (!this.autoScrollDirection) return;
 
     if (!this.lastFrameTimestamp) this.lastFrameTimestamp = timestamp;
-    // calcula o tempo decorrido para um movimento suave e independente de frame rate
     const deltaTime = Math.min((timestamp - this.lastFrameTimestamp) / 1000, 0.05);
     this.lastFrameTimestamp = timestamp;
 
@@ -170,7 +167,6 @@ export class Attractions implements OnInit, AfterViewInit {
   };
   
   // lógica carrossel infinito 
-
   private scrollByAmount(amount: number, smooth = true): void {
     if (this.isAdjustingTrack) return;
     
@@ -193,8 +189,7 @@ export class Attractions implements OnInit, AfterViewInit {
     // adiciona novos cards no início do array
     this.cards = [...this.createCardBlock(), ...this.cards];
 
-    // espera o DOM atualizar e ajusta a posição do scroll silenciosamente
-    // para que o usuário não perceba a adição de novos elementos.
+    // espera o DOM atualizar e ajusta a posição do scroll p que não se perceba a adição de novos elementos
     requestAnimationFrame(() => {
       el.scrollLeft = currentScroll + this.getOriginalBlockWidth();
       this.isAdjustingTrack = false;
@@ -208,8 +203,8 @@ export class Attractions implements OnInit, AfterViewInit {
     // adiciona novos cards no fim do array
     this.cards = [...this.cards, ...this.createCardBlock()];
     
-    // apenas adiciona, não precisa ajustar o scroll.
-    // o próximo `scrollBy` continuará de onde parou.
+    // apenas adiciona, não precisa ajustar o scroll
+    // o próximo `scrollBy` continuará de onde parou
     requestAnimationFrame(() => {
         this.isAdjustingTrack = false;
     });
