@@ -125,8 +125,8 @@
     align-items: center; 
     min-height: auto;
     padding-bottom: 15px;
-    padding-left: -50px;
-    margin-left: -24px
+    margin-left: -7vw;
+    margin-top: -20vw;
   }
 
   .hero-container .text-container {
