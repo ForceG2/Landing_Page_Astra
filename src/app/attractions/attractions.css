@@ -221,7 +221,7 @@
 
 @media (max-width: 768px) {
   .attractions { padding: 40px 16px }
-  .attractions-title { font-size: 1.5rem; padding-bottom: 20px }
+  .attractions-title { font-size: 1.8rem; padding-bottom: 20px }
   .carousel { margin-bottom: 32px }
   .track {
     grid-auto-columns: 280px;
@@ -229,7 +229,7 @@
     padding: 8px 40px;
     --thumb-h: clamp(160px, 50dvh, 300px)
   }
-  .caption { font-size: 0.9rem; margin: 12px 0 0 }
+  .caption { font-size: 1rem; margin: 12px 0 0 }
   .nav { width: 26px; height: 26px; font-size: 14px }
 }
 
@@ -241,6 +241,7 @@
     padding: 8px 48px;
     --thumb-h: clamp(170px, 55dvh, 340px)
   }
+  .attractions-title { font-size: 2.2rem}
 }
 
 @media (max-width: 1366px) {
@@ -288,13 +289,13 @@
     gap: 40px;
     --thumb-h: clamp(280px, 60dvh, 500px)
   }
-  .caption { font-size: 1.1rem; margin: 22px 0 0 }
+  .caption { font-size: 1.3rem; margin: 22px 0 0 }
   .nav { width: 36px; height: 36px; font-size: 18px }
 }
 
 @media (min-width: 2560px) {
   .attractions { padding: 110px 48px }
-  .attractions-title { font-size: 3rem; padding-bottom: 60px }
+  .attractions-title { font-size: 3.5rem; padding-bottom: 60px }
   .carousel { margin-bottom: 90px }
   .track {
     grid-auto-columns: 420px;
@@ -302,7 +303,7 @@
     padding: 8px 72px;
     --thumb-h: clamp(300px, 58dvh, 550px)
   }
-  .caption { font-size: 1.2rem; margin: 24px 0 0 }
+  .caption { font-size: 1.5rem; margin: 24px 0 0 }
   .nav { width: 40px; height: 40px; font-size: 20px }
 }
 
@@ -317,7 +318,7 @@
     --thumb-h: clamp(420px, 58dvh, 750px)
   }
   .card { border-radius: 20px }
-  .caption { font-size: 1.5rem; margin: 32px 0 0 }
+  .caption { font-size: 2rem; margin: 32px 0 0 }
   .nav { width: 50px; height: 50px; font-size: 26px }
 }
 
