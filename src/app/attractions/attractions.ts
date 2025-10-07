@@ -51,6 +51,7 @@ export class Attractions implements AfterViewInit {
   private cardWidth = 372;
   private isAdjusting = false;
   private nextId = 1;
+  private currentlyFlippedId: number | null = null;
 
   ngAfterViewInit() {
     const repeated: CardVM[] = [];
@@ -59,12 +60,12 @@ export class Attractions implements AfterViewInit {
     for (let t = 0; t < times; t++) {
       for (const base of this.originalCards) {
         repeated.push({
-          id: this.nextId++,
-          image: base.image,
-          caption: base.caption,
-          details: base.details,
-          flipped: false,
-        });
+           id: this.nextId++, 
+           image: base.image, 
+           caption: base.caption, 
+           details: base.details, 
+           flipped: false,
+          });
       }
     }
     this.cards = repeated;
@@ -75,14 +76,14 @@ export class Attractions implements AfterViewInit {
     }, 0);
   }
 
-  trackById(_index: number, item: CardVM) {
+  trackById(_index: number, item: CardVM) { 
     return item.id;
-  }
+   }
 
   @HostListener('window:resize')
-  onResize() {
+  onResize() { 
     this.updateCardWidth();
-  }
+   }
 
   private updateCardWidth() {
     const cards = this.track.nativeElement.querySelectorAll<HTMLElement>('.card');
@@ -102,8 +103,22 @@ export class Attractions implements AfterViewInit {
     }
   }
 
+  // Clicar na carta vira/desvira
   toggleFlip(card: CardVM) {
-    card.flipped = !card.flipped;
+    if (card.flipped) {
+      // clicou no mesmo virado -> desvirar
+      card.flipped = false;
+      this.currentlyFlippedId = null;
+      return;
+    }
+
+    // desvirar todos antes de virar o atual
+    if (this.currentlyFlippedId !== null) {
+      const prev = this.cards.find(c => c.id === this.currentlyFlippedId);
+      if (prev) prev.flipped = false;
+    }
+    card.flipped = true;
+    this.currentlyFlippedId = card.id;
   }
 
   scrollLeft() {
@@ -141,10 +156,10 @@ export class Attractions implements AfterViewInit {
     el.style.scrollBehavior = 'auto';
 
     const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++,
-      image: b.image,
-      caption: b.caption,
-      details: b.details,
+      id: this.nextId++, 
+      image: b.image, 
+      caption: b.caption, 
+      details: b.details, 
       flipped: false,
     }));
     this.cards = [...block, ...this.cards];
@@ -163,10 +178,10 @@ export class Attractions implements AfterViewInit {
     this.isAdjusting = true;
 
     const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++,
-      image: b.image,
-      caption: b.caption,
-      details: b.details,
+      id: this.nextId++, 
+      image: b.image, 
+      caption: b.caption, 
+      details: b.details, 
       flipped: false,
     }));
     this.cards = [...this.cards, ...block];
@@ -177,7 +192,7 @@ export class Attractions implements AfterViewInit {
     }, 50);
   }
 
-  private getScrollAmount(): number {
-    return this.track.nativeElement.clientWidth;
+  private getScrollAmount(): number { 
+    return this.track.nativeElement.clientWidth; 
   }
 }

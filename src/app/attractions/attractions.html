@@ -16,13 +16,17 @@
           (keydown)="onCardKeydown($event, c)"
           tabindex="0"
           [attr.aria-pressed]="c.flipped"
+          [attr.aria-expanded]="c.flipped"
           [class.is-flipped]="c.flipped"
+          [attr.aria-label]="c.caption + (c.flipped ? ' (virado)' : ' (toque para virar)')"
         >
           <div class="flip-inner">
 
             <div class="face face-front">
               <div class="thumb">
                 <img [src]="c.image" [alt]="c.caption" />
+                
+                <span class="tap-hint" aria-hidden="true">Toque para virar</span>
               </div>
               <p class="caption">{{ c.caption }}</p>
             </div>
@@ -31,7 +35,7 @@
               <div class="back-panel">
                 <h3 class="back-title">{{ c.caption }}</h3>
                 <p class="back-text">{{ c.details }}</p>
-                <span class="hint">Clique ou pressione Enter/Espaço para voltar</span>
+                <span class="hint">Clique novamente para voltar</span>
               </div>
             </div>
           </div>
