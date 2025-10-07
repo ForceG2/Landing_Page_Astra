@@ -156,6 +156,7 @@
     object-fit: cover;
     transform: translateX(0); 
     max-width: 300%;
+    transform: translateY(30px);
   }
 }
 
