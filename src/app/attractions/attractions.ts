@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 
-type Card = { image: string; caption: string };
+type BaseCard = { image: string; caption: string; details: string };
+type CardVM = BaseCard & { id: number; flipped: boolean };
 
 @Component({
   selector: 'app-attractions',
@@ -12,34 +13,70 @@ type Card = { image: string; caption: string };
 })
 export class Attractions implements AfterViewInit {
   @ViewChild('track', { static: true }) track!: ElementRef<HTMLDivElement>;
- 
-  originalCards: Card[] = [
-    { image: '/assets/images/brandon-sanderson.jpg', caption: 'Entrevista com Brandon Sanderson' },
-    { image: '/assets/images/bruninho.jpg',           caption: 'Show do Bruno Mars ao vivo' },
-    { image: '/assets/images/interstellar-poster.jpg',caption: 'Sessão de Interestelar' },
-    { image: '/assets/images/buffet.jpg',             caption: 'Buffet 24 horas' },
-    { image: '/assets/images/camara-gravidade.png',   caption: 'Câmara sem gravidade' },
+
+  private originalCards: BaseCard[] = [
+    {
+      image: '/assets/images/brandon-sanderson.jpg',
+      caption: 'Entrevista com Brandon Sanderson',
+      details:
+        'Bate-papo exclusivo sobre criação de mundos, escrita de fantasia e o Cosmere. Sessão de perguntas e respostas ao vivo.',
+    },
+    {
+      image: '/assets/images/bruninho.jpg',
+      caption: 'Show do Bruno Mars ao vivo',
+      details:
+        'Setlist especial com os maiores hits, salão ambientado e número inédito inspirado no espaço sideral.',
+    },
+    {
+      image: '/assets/images/interstellar-poster.jpg',
+      caption: 'Sessão de Interestelar',
+      details:
+        'Exibição em projeção estelar com áudio espacial. Debate pós-filme sobre ciência.',
+    },
+    {
+      image: '/assets/images/buffet.jpg',
+      caption: 'Buffet 24 horas',
+      details:
+        'Cozinha internacional com cardápio rotativo, opções veganas e estação de cafés. Aberto a qualquer hora.',
+    },
+    {
+      image: '/assets/images/camara-gravidade.png',
+      caption: 'Câmara sem gravidade',
+      details:
+        'Experiência controlada de gravidade zero com monitoramento. Orientações de segurança inclusas na atividade.',
+    },
   ];
- 
-  cards: Card[] = [];
-  private cardWidth = 372; // valor inicial
+
+  cards: CardVM[] = [];
+  private cardWidth = 372;
   private isAdjusting = false;
- 
+  private nextId = 1;
+
   ngAfterViewInit() {
-    // cria cópias suficientes para ter buffer nos dois lados
-    this.cards = [
-      ...this.originalCards,
-      ...this.originalCards,
-      ...this.originalCards,
-      ...this.originalCards,
-      ...this.originalCards
-    ];
-   
-    // unicia no meio (terceiro conjunto)
+    const repeated: CardVM[] = [];
+    const times = 5;
+
+    for (let t = 0; t < times; t++) {
+      for (const base of this.originalCards) {
+        repeated.push({
+          id: this.nextId++,
+          image: base.image,
+          caption: base.caption,
+          details: base.details,
+          flipped: false,
+        });
+      }
+    }
+    this.cards = repeated;
+
     setTimeout(() => {
       this.updateCardWidth();
       this.track.nativeElement.scrollLeft = this.cardWidth * this.originalCards.length * 2;
     }, 0);
+  }
+
+  trackById(_index: number, item: CardVM) {
+    return item.id;
   }
 
   @HostListener('window:resize')
@@ -48,97 +85,98 @@ export class Attractions implements AfterViewInit {
   }
 
   private updateCardWidth() {
-    const cards = this.track.nativeElement.querySelectorAll('.card');
+    const cards = this.track.nativeElement.querySelectorAll<HTMLElement>('.card');
     if (cards.length > 0) {
-      const card = cards[0] as HTMLElement;
+      const card = cards[0];
       const style = window.getComputedStyle(this.track.nativeElement);
       const gap = parseInt(style.gap) || 32;
       this.cardWidth = card.offsetWidth + gap;
     }
   }
- 
+
+  onCardKeydown(ev: KeyboardEvent, card: CardVM) {
+    const key = ev.key.toLowerCase();
+    if (key === 'enter' || key === ' ') {
+      ev.preventDefault();
+      this.toggleFlip(card);
+    }
+  }
+
+  toggleFlip(card: CardVM) {
+    card.flipped = !card.flipped;
+  }
+
   scrollLeft() {
     if (this.isAdjusting) return;
-   
     const el = this.track.nativeElement;
     const currentScroll = el.scrollLeft;
-   
-    // se está muito no início, adiciona cards no começo
+
     if (currentScroll < this.cardWidth * this.originalCards.length * 1.5) {
       this.prependCards();
       return;
     }
-   
-    el.scrollBy({
-      left: -this.cardWidth,
-      behavior: 'smooth',
-    });
+
+    el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
   }
- 
+
   scrollRight() {
     if (this.isAdjusting) return;
-   
     const el = this.track.nativeElement;
     const currentScroll = el.scrollLeft;
     const maxScroll = el.scrollWidth - el.clientWidth;
-   
-    // se está muito no final, adiciona cards no final
-    if (currentScroll > maxScroll - (this.cardWidth * this.originalCards.length * 1.5)) {
+
+    if (currentScroll > maxScroll - this.cardWidth * this.originalCards.length * 1.5) {
       this.appendCards();
       return;
     }
-   
-    el.scrollBy({
-      left: this.cardWidth,
-      behavior: 'smooth',
-    });
+
+    el.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
   }
- 
+
   private prependCards() {
     this.isAdjusting = true;
     const el = this.track.nativeElement;
     const currentScroll = el.scrollLeft;
-   
-    // desabilita scroll suave temporariamente
+
     el.style.scrollBehavior = 'auto';
 
-    // adiciona cards no início
-    this.cards = [...this.originalCards, ...this.cards];
-   
-    // ajusta a posição do scroll instantaneamente
+    const block: CardVM[] = this.originalCards.map((b) => ({
+      id: this.nextId++,
+      image: b.image,
+      caption: b.caption,
+      details: b.details,
+      flipped: false,
+    }));
+    this.cards = [...block, ...this.cards];
+
     setTimeout(() => {
-      el.scrollLeft = currentScroll + (this.cardWidth * this.originalCards.length);
-     
-      // reabilita scroll suave
+      el.scrollLeft = currentScroll + this.cardWidth * this.originalCards.length;
       setTimeout(() => {
         el.style.scrollBehavior = 'smooth';
         this.isAdjusting = false;
-       
-        // scroll para a esquerda
-        el.scrollBy({
-          left: -this.cardWidth,
-          behavior: 'smooth',
-        });
+        el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
       }, 50);
     }, 0);
   }
- 
+
   private appendCards() {
     this.isAdjusting = true;
 
-    // adiciona cards no final
-    this.cards = [...this.cards, ...this.originalCards];
-   
-    // aguarda o DOM atualizar e então faz o scroll
+    const block: CardVM[] = this.originalCards.map((b) => ({
+      id: this.nextId++,
+      image: b.image,
+      caption: b.caption,
+      details: b.details,
+      flipped: false,
+    }));
+    this.cards = [...this.cards, ...block];
+
     setTimeout(() => {
       this.isAdjusting = false;
-      this.track.nativeElement.scrollBy({
-        left: this.cardWidth,
-        behavior: 'smooth',
-      });
+      this.track.nativeElement.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
     }, 50);
   }
- 
+
   private getScrollAmount(): number {
     return this.track.nativeElement.clientWidth;
   }
