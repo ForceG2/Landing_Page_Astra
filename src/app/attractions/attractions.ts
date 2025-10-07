@@ -14,7 +14,12 @@ type CardVM = BaseCard & { id: number; flipped: boolean; animating: boolean };
 export class Attractions implements OnInit, AfterViewInit {
   @ViewChild('track', { static: true }) track!: ElementRef<HTMLDivElement>;
 
-  private originalCards: BaseCard[] = [
+  private readonly FLIP_ANIMATION_DURATION = 700;
+  private readonly INITIAL_REPEAT_FACTOR = 5;
+  private readonly SCROLL_THRESHOLD_FACTOR = 1.5;
+  private readonly HOLD_SCROLL_SPEED = 700;
+
+  private readonly originalCards: BaseCard[] = [
     {
       image: '/assets/images/brandon-sanderson.jpg',
       caption: 'Entrevista com Brandon Sanderson',
@@ -47,217 +52,204 @@ export class Attractions implements OnInit, AfterViewInit {
     },
   ];
 
+  // estado do componente
   cards: CardVM[] = [];
   private cardWidth = 372;
-  private isAdjusting = false;
+  private isAdjustingTrack = false;
   private nextId = 1;
-  private currentlyFlippedId: number | null = null;
-  private rafId: number | null = null;
-  private holdDir: 'left' | 'right' | null = null;
-  private lastTs = 0;
-  private holdSpeed = 900; 
+  private currentlyFlippedCardId: number | null = null;
+  private autoScrollRafId: number | null = null;
+  private autoScrollDirection: 'left' | 'right' | null = null;
+  private lastFrameTimestamp = 0;
 
   ngOnInit(): void {
-    const repeated: CardVM[] = [];
-    const times = 5;
-    for (let t = 0; t < times; t++) {
-      for (const base of this.originalCards) {
-        repeated.push({
-          id: this.nextId++,
-          image: base.image,
-          caption: base.caption,
-          details: base.details,
-          flipped: false,
-          animating: false
-        });
-      }
+    const repeatedCards: CardVM[] = [];
+    for (let i = 0; i < this.INITIAL_REPEAT_FACTOR; i++) {
+      repeatedCards.push(...this.createCardBlock());
     }
-    this.cards = repeated;
+    this.cards = repeatedCards;
   }
 
-
-  ngAfterViewInit() {
-    // mede largura e posiciona o scroll (fora da mudança de dados)
+  ngAfterViewInit(): void {
     this.updateCardWidth();
-    // use requestAnimationFrame para garantir que o layout foi aplicado
+    // posiciona o scroll no meio para dar a ilusão de infinito em ambas as direções
     requestAnimationFrame(() => {
       const el = this.track.nativeElement;
-      el.scrollLeft = this.cardWidth * this.originalCards.length * 2;
+      el.scrollLeft = this.getScrollThreshold();
     });
   }
 
-  trackById(_index: number, item: CardVM) { return item.id; }
-
-  @HostListener('window:resize') onResize() { this.updateCardWidth(); }
-
-  private updateCardWidth() {
-    const cards = this.track.nativeElement.querySelectorAll<HTMLElement>('.card');
-    if (cards.length > 0) {
-      const card = cards[0];
-      const style = window.getComputedStyle(this.track.nativeElement);
-      const gap = parseInt(style.gap) || 32;
-      this.cardWidth = card.offsetWidth + gap;
-    }
+  trackById(_index: number, item: CardVM): number {
+    return item.id;
   }
 
-  onCardKeydown(ev: KeyboardEvent, card: CardVM) {
-    const key = ev.key.toLowerCase();
-    if (key === 'enter' || key === ' ') {
-      ev.preventDefault();
+  @HostListener('window:resize')
+  onResize(): void {
+    this.updateCardWidth();
+  }
+
+  // lógica de Interação com cards 
+
+  onCardKeydown(event: KeyboardEvent, card: CardVM): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
       this.toggleFlip(card);
     }
   }
 
-  toggleFlip(card: CardVM) {
-    const DURATION = 700; 
-    if (!card.flipped && this.currentlyFlippedId !== null) {
-      const prev = this.cards.find(c => c.id === this.currentlyFlippedId);
-      if (prev) {
-        prev.animating = true;
-        prev.flipped = false;
-        setTimeout(() => (prev.animating = false), DURATION);
+  toggleFlip(cardToToggle: CardVM): void {
+    // se o card já estiver em animação, não faz nada
+    if (cardToToggle.animating) return;
+
+    // desvira o card que estava virado anteriormente (se houver um e não for o mesmo)
+    if (this.currentlyFlippedCardId && this.currentlyFlippedCardId !== cardToToggle.id) {
+      const previouslyFlippedCard = this.cards.find(c => c.id === this.currentlyFlippedCardId);
+      if (previouslyFlippedCard) {
+        this.setCardFlipState(previouslyFlippedCard, false);
       }
     }
+
+    // vira ou desvira o card atual
+    this.setCardFlipState(cardToToggle, !cardToToggle.flipped);
+    this.currentlyFlippedCardId = cardToToggle.flipped ? cardToToggle.id : null;
+  }
+
+  private setCardFlipState(card: CardVM, flipped: boolean): void {
+    card.flipped = flipped;
     card.animating = true;
-    card.flipped = !card.flipped;
-    this.currentlyFlippedId = card.flipped ? card.id : null;
-    setTimeout(() => (card.animating = false), DURATION);
+    setTimeout(() => (card.animating = false), this.FLIP_ANIMATION_DURATION);
   }
 
-  scrollLeft() {
-    if (this.isAdjusting) return;
-    const el = this.track.nativeElement;
-    const currentScroll = el.scrollLeft;
+  // lógica de scroll (click)
 
-    if (currentScroll < this.cardWidth * this.originalCards.length * 1.5) {
-      this.prependCards();
-      return;
-    }
-
-    el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
+  scrollLeft(): void {
+    this.scrollByAmount(-this.cardWidth);
   }
 
-  scrollRight() {
-    if (this.isAdjusting) return;
-    const el = this.track.nativeElement;
-    const currentScroll = el.scrollLeft;
-    const maxScroll = el.scrollWidth - el.clientWidth;
+  scrollRight(): void {
+    this.scrollByAmount(this.cardWidth);
+  }
+  
+  // lógica de scroll (hold) 
 
-    if (currentScroll > maxScroll - this.cardWidth * this.originalCards.length * 1.5) { 
-      this.appendCards(); 
-      return; 
-    }
+  startAutoScroll(direction: 'left' | 'right'): void {
+    if (this.isAdjustingTrack) return;
+
+    this.autoScrollDirection = direction;
+    this.lastFrameTimestamp = 0;
+    this.track.nativeElement.style.scrollBehavior = 'auto';
     
-    el.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
+    // inicia o loop de animação
+    if (this.autoScrollRafId) cancelAnimationFrame(this.autoScrollRafId);
+    this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
   }
 
-  startAutoScroll(dir: 'left' | 'right') {
-    if (this.isAdjusting) return;
-
-    this.holdDir = dir; 
-    this.lastTs = 0;
-
-    const el = this.track.nativeElement;
-    el.style.scrollBehavior = 'auto';
-
-    const step = (ts: number) => {
-      if (!this.holdDir) { 
-        el.style.scrollBehavior = 'smooth'; 
-        this.rafId = null; 
-        return; 
-      }
-
-      if (!this.lastTs) this.lastTs = ts;
-      const dt = Math.min((ts - this.lastTs) / 1000, 0.05); // cap para estabilidade
-      this.lastTs = ts;
-
-      const amount = this.holdSpeed * dt;
-      this.scrollContinuous(this.holdDir, amount);
-
-      this.rafId = requestAnimationFrame(step);
-    };
-
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this.rafId = requestAnimationFrame(step);
-  }
-
-  stopAutoScroll() {
-    this.holdDir = null;
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this.rafId = null;
+  stopAutoScroll(): void {
+    this.autoScrollDirection = null;
+    if (this.autoScrollRafId) {
+      cancelAnimationFrame(this.autoScrollRafId);
+      this.autoScrollRafId = null;
+    }
     this.track.nativeElement.style.scrollBehavior = 'smooth';
   }
 
-  private scrollContinuous(dir: 'left' | 'right', amount: number) {
-    if (this.isAdjusting) return;
+  private autoScrollStep = (timestamp: number): void => {
+    if (!this.autoScrollDirection) return;
 
-    const el = this.track.nativeElement;
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    const threshold = this.cardWidth * this.originalCards.length * 1.5;
+    if (!this.lastFrameTimestamp) this.lastFrameTimestamp = timestamp;
+    // calcula o tempo decorrido para um movimento suave e independente de frame rate
+    const deltaTime = Math.min((timestamp - this.lastFrameTimestamp) / 1000, 0.05);
+    this.lastFrameTimestamp = timestamp;
 
-    if (dir === 'right') {
-      if (el.scrollLeft > maxScroll - threshold) { 
-        this.appendCards(); 
-        return; 
-      }
-      el.scrollLeft += amount;
+    const scrollAmount = this.HOLD_SCROLL_SPEED * deltaTime;
+    const directionMultiplier = this.autoScrollDirection === 'left' ? -1 : 1;
+    
+    this.scrollByAmount(scrollAmount * directionMultiplier, false);
+
+    this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
+  };
+  
+  // lógica carrossel infinito 
+
+  private scrollByAmount(amount: number, smooth = true): void {
+    if (this.isAdjustingTrack) return;
+    
+    if (amount > 0 && this.isNearEnd()) {
+      this.appendCards();
+    } else if (amount < 0 && this.isNearStart()) {
+      this.prependCards();
     } else {
-      if (el.scrollLeft < threshold) { 
-        this.prependCards(); 
-        return; // deixa o próximo frame continuar
-      }
-      el.scrollLeft -= amount;
+      this.track.nativeElement.scrollBy({ left: amount, behavior: smooth ? 'smooth' : 'auto' });
     }
   }
 
-  private prependCards() {
-    this.isAdjusting = true;
+  private prependCards(): void {
+    if (this.isAdjustingTrack) return;
+    this.isAdjustingTrack = true;
+    
     const el = this.track.nativeElement;
     const currentScroll = el.scrollLeft;
+    
+    // adiciona novos cards no início do array
+    this.cards = [...this.createCardBlock(), ...this.cards];
 
-    el.style.scrollBehavior = 'auto';
-
-    const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++, 
-      image: b.image, 
-      caption: b.caption, 
-      details: b.details, 
-      flipped: false, 
-      animating: false,
-    }));
-    this.cards = [...block, ...this.cards];
-
-    setTimeout(() => {
-      el.scrollLeft = currentScroll + this.cardWidth * this.originalCards.length;
-      setTimeout(() => {
-
-        el.style.scrollBehavior = this.holdDir ? 'auto' : 'smooth';
-        this.isAdjusting = false;
-        if (!this.holdDir) el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
-      }, 50);
-    }, 0);
+    // espera o DOM atualizar e ajusta a posição do scroll silenciosamente
+    // para que o usuário não perceba a adição de novos elementos.
+    requestAnimationFrame(() => {
+      el.scrollLeft = currentScroll + this.getOriginalBlockWidth();
+      this.isAdjustingTrack = false;
+    });
   }
 
-  private appendCards() {
-    this.isAdjusting = true;
+  private appendCards(): void {
+    if (this.isAdjustingTrack) return;
+    this.isAdjustingTrack = true;
 
-    const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++, 
-      image: b.image, 
-      caption: b.caption, 
-      details: b.details, 
-      flipped: false, 
-      animating: false,
-    }));
-    this.cards = [...this.cards, ...block];
-
-    setTimeout(() => {
-      this.isAdjusting = false;
-      if (!this.holdDir) this.track.nativeElement.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
-    }, 50);
+    // adiciona novos cards no fim do array
+    this.cards = [...this.cards, ...this.createCardBlock()];
+    
+    // apenas adiciona, não precisa ajustar o scroll.
+    // o próximo `scrollBy` continuará de onde parou.
+    requestAnimationFrame(() => {
+        this.isAdjustingTrack = false;
+    });
   }
 
-  private getScrollAmount(): number {
-    return this.track.nativeElement.clientWidth;
+  private createCardBlock(): CardVM[] {
+    return this.originalCards.map(baseCard => ({
+      ...baseCard,
+      id: this.nextId++,
+      flipped: false,
+      animating: false,
+    }));
+  }
+
+
+
+  private updateCardWidth(): void {
+    const cardEl = this.track.nativeElement.querySelector<HTMLElement>('.card');
+    if (cardEl) {
+      const style = window.getComputedStyle(this.track.nativeElement);
+      const gap = parseInt(style.gap) || 32;
+      this.cardWidth = cardEl.offsetWidth + gap;
+    }
+  }
+  
+  private getScrollThreshold(): number {
+    return this.getOriginalBlockWidth() * this.SCROLL_THRESHOLD_FACTOR;
+  }
+  
+  private getOriginalBlockWidth(): number {
+      return this.cardWidth * this.originalCards.length;
+  }
+
+  private isNearStart(): boolean {
+    return this.track.nativeElement.scrollLeft < this.getScrollThreshold();
+  }
+
+  private isNearEnd(): boolean {
+    const el = this.track.nativeElement;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    return el.scrollLeft > maxScroll - this.getScrollThreshold();
   }
 }
