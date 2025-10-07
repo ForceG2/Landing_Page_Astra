@@ -4,7 +4,7 @@
   justify-content: flex-start;
   position: relative;
   padding-bottom: 10vh;
-  min-height: 80vh; 
+  min-height: 85vh; 
 }
 
 .text-container {
@@ -63,5 +63,12 @@
   }
   50% {
     transform: translate3d(20px, 0, 0);
+  }
+}
+
+@media (orientation: portrait) {
+  .hero-container {
+    min-height: auto;
+    padding-bottom: 5vh;
   }
 }
