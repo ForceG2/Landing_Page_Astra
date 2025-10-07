@@ -42,10 +42,19 @@
   width: 100%;      
   height: auto;
   display: block;
-  animation: floatX 15s ease-in-out infinite;
+  animation: floatX 15s ease-in-out infinite, rotate 160s linear infinite;
   will-change: transform;
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes floatY {
