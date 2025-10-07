@@ -153,6 +153,8 @@
     visibility: hidden;
     transition-delay: 0s, 0s
   }
+
+  .nav:active { transform: translateY(-50%) scale(0.96); }
 }
 
 .caption {

@@ -52,6 +52,10 @@ export class Attractions implements AfterViewInit {
   private isAdjusting = false;
   private nextId = 1;
   private currentlyFlippedId: number | null = null;
+  private rafId: number | null = null;
+  private holdDir: 'left' | 'right' | null = null;
+  private lastTs = 0;
+  private holdSpeed = 900;
 
   ngAfterViewInit() {
     const repeated: CardVM[] = [];
@@ -60,12 +64,12 @@ export class Attractions implements AfterViewInit {
     for (let t = 0; t < times; t++) {
       for (const base of this.originalCards) {
         repeated.push({
-           id: this.nextId++, 
-           image: base.image, 
-           caption: base.caption, 
-           details: base.details, 
-           flipped: false,
-          });
+          id: this.nextId++,
+          image: base.image,
+          caption: base.caption,
+          details: base.details,
+          flipped: false,
+        });
       }
     }
     this.cards = repeated;
@@ -76,14 +80,14 @@ export class Attractions implements AfterViewInit {
     }, 0);
   }
 
-  trackById(_index: number, item: CardVM) { 
+  trackById(_index: number, item: CardVM) {
     return item.id;
-   }
+  }
 
   @HostListener('window:resize')
-  onResize() { 
+  onResize() {
     this.updateCardWidth();
-   }
+  }
 
   private updateCardWidth() {
     const cards = this.track.nativeElement.querySelectorAll<HTMLElement>('.card');
@@ -148,6 +152,65 @@ export class Attractions implements AfterViewInit {
     el.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
   }
 
+  startAutoScroll(dir: 'left' | 'right') {
+    if (this.isAdjusting) return;
+
+    this.holdDir = dir;
+    this.lastTs = 0;
+
+    const el = this.track.nativeElement;
+    el.style.scrollBehavior = 'auto'; 
+
+    const step = (ts: number) => {
+      if (!this.holdDir) {
+        el.style.scrollBehavior = 'smooth';
+        this.rafId = null;
+        return;
+      }
+
+      if (!this.lastTs) this.lastTs = ts;
+      const dt = Math.min((ts - this.lastTs) / 1000, 0.05); // cap para estabilidade
+      this.lastTs = ts;
+
+      const amount = this.holdSpeed * dt;
+      this.scrollContinuous(this.holdDir, amount);
+
+      this.rafId = requestAnimationFrame(step);
+    };
+
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = requestAnimationFrame(step);
+  }
+
+  stopAutoScroll() {
+    this.holdDir = null;
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = null;
+    this.track.nativeElement.style.scrollBehavior = 'smooth';
+  }
+
+  private scrollContinuous(dir: 'left' | 'right', amount: number) {
+    if (this.isAdjusting) return;
+
+    const el = this.track.nativeElement;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    const threshold = this.cardWidth * this.originalCards.length * 1.5;
+
+    if (dir === 'right') {
+      if (el.scrollLeft > maxScroll - threshold) {
+        this.appendCards();
+        return; 
+      }
+      el.scrollLeft += amount;
+    } else {
+      if (el.scrollLeft < threshold) {
+        this.prependCards();
+        return; // deixa o próximo frame continuar
+      }
+      el.scrollLeft -= amount;
+    }
+  }
+
   private prependCards() {
     this.isAdjusting = true;
     const el = this.track.nativeElement;
@@ -156,10 +219,10 @@ export class Attractions implements AfterViewInit {
     el.style.scrollBehavior = 'auto';
 
     const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++, 
-      image: b.image, 
-      caption: b.caption, 
-      details: b.details, 
+      id: this.nextId++,
+      image: b.image,
+      caption: b.caption,
+      details: b.details,
       flipped: false,
     }));
     this.cards = [...block, ...this.cards];
@@ -167,9 +230,12 @@ export class Attractions implements AfterViewInit {
     setTimeout(() => {
       el.scrollLeft = currentScroll + this.cardWidth * this.originalCards.length;
       setTimeout(() => {
-        el.style.scrollBehavior = 'smooth';
+        
+        el.style.scrollBehavior = this.holdDir ? 'auto' : 'smooth';
         this.isAdjusting = false;
-        el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
+        if (!this.holdDir) {
+          el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
+        }
       }, 50);
     }, 0);
   }
@@ -178,21 +244,24 @@ export class Attractions implements AfterViewInit {
     this.isAdjusting = true;
 
     const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++, 
-      image: b.image, 
-      caption: b.caption, 
-      details: b.details, 
+      id: this.nextId++,
+      image: b.image,
+      caption: b.caption,
+      details: b.details,
       flipped: false,
     }));
     this.cards = [...this.cards, ...block];
 
     setTimeout(() => {
       this.isAdjusting = false;
-      this.track.nativeElement.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
+      // se está segurando, o loop continua; se foi clique único, mantém a rolagem suave de 1 card
+      if (!this.holdDir) {
+        this.track.nativeElement.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
+      }
     }, 50);
   }
 
-  private getScrollAmount(): number { 
-    return this.track.nativeElement.clientWidth; 
+  private getScrollAmount(): number {
+    return this.track.nativeElement.clientWidth;
   }
 }
