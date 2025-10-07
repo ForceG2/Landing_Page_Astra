@@ -5,7 +5,6 @@
   position: relative;
   padding-bottom: 10vh;
   min-height: 80vh; 
-  overflow: hidden;
 }
 
 .text-container {
@@ -13,8 +12,9 @@
   z-index: 2;
   max-width: 38vw;
   padding: 40px 0;
-  transform: translateY(-60px);
-  margin-left: 12vw; 
+  margin-left: 12vw;
+  transform: none;      
+  align-self: center;    
 }
 
 .description {
