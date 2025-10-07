@@ -4,7 +4,8 @@
   justify-content: flex-start;
   position: relative;
   padding-bottom: 10vh;
-  min-height: 85vh; 
+  min-height: 85vh;
+  overflow-x: clip; 
 }
 
 .text-container {
@@ -22,6 +23,11 @@
   margin-bottom: 0px;
   overflow: auto;    
   box-sizing: border-box;
+}
+
+.image-container,
+.earth-image { 
+  pointer-events: none; 
 }
 
 .image-container {
