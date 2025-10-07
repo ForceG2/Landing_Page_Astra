@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, HostListener, OnInit } from '@angular/core';
 
 type BaseCard = { image: string; caption: string; details: string };
-type CardVM = BaseCard & { id: number; flipped: boolean };
+type CardVM = BaseCard & { id: number; flipped: boolean; animating: boolean };
 
 @Component({
   selector: 'app-attractions',
@@ -11,7 +11,7 @@ type CardVM = BaseCard & { id: number; flipped: boolean };
   templateUrl: './attractions.html',
   styleUrl: './attractions.css',
 })
-export class Attractions implements AfterViewInit {
+export class Attractions implements OnInit, AfterViewInit {
   @ViewChild('track', { static: true }) track!: ElementRef<HTMLDivElement>;
 
   private originalCards: BaseCard[] = [
@@ -55,12 +55,11 @@ export class Attractions implements AfterViewInit {
   private rafId: number | null = null;
   private holdDir: 'left' | 'right' | null = null;
   private lastTs = 0;
-  private holdSpeed = 900;
+  private holdSpeed = 900; 
 
-  ngAfterViewInit() {
+  ngOnInit(): void {
     const repeated: CardVM[] = [];
     const times = 5;
-
     for (let t = 0; t < times; t++) {
       for (const base of this.originalCards) {
         repeated.push({
@@ -69,25 +68,27 @@ export class Attractions implements AfterViewInit {
           caption: base.caption,
           details: base.details,
           flipped: false,
+          animating: false
         });
       }
     }
     this.cards = repeated;
-
-    setTimeout(() => {
-      this.updateCardWidth();
-      this.track.nativeElement.scrollLeft = this.cardWidth * this.originalCards.length * 2;
-    }, 0);
   }
 
-  trackById(_index: number, item: CardVM) {
-    return item.id;
-  }
 
-  @HostListener('window:resize')
-  onResize() {
+  ngAfterViewInit() {
+    // mede largura e posiciona o scroll (fora da mudança de dados)
     this.updateCardWidth();
+    // use requestAnimationFrame para garantir que o layout foi aplicado
+    requestAnimationFrame(() => {
+      const el = this.track.nativeElement;
+      el.scrollLeft = this.cardWidth * this.originalCards.length * 2;
+    });
   }
+
+  trackById(_index: number, item: CardVM) { return item.id; }
+
+  @HostListener('window:resize') onResize() { this.updateCardWidth(); }
 
   private updateCardWidth() {
     const cards = this.track.nativeElement.querySelectorAll<HTMLElement>('.card');
@@ -107,22 +108,20 @@ export class Attractions implements AfterViewInit {
     }
   }
 
-  // Clicar na carta vira/desvira
   toggleFlip(card: CardVM) {
-    if (card.flipped) {
-      // clicou no mesmo virado -> desvirar
-      card.flipped = false;
-      this.currentlyFlippedId = null;
-      return;
-    }
-
-    // desvirar todos antes de virar o atual
-    if (this.currentlyFlippedId !== null) {
+    const DURATION = 700; 
+    if (!card.flipped && this.currentlyFlippedId !== null) {
       const prev = this.cards.find(c => c.id === this.currentlyFlippedId);
-      if (prev) prev.flipped = false;
+      if (prev) {
+        prev.animating = true;
+        prev.flipped = false;
+        setTimeout(() => (prev.animating = false), DURATION);
+      }
     }
-    card.flipped = true;
-    this.currentlyFlippedId = card.id;
+    card.animating = true;
+    card.flipped = !card.flipped;
+    this.currentlyFlippedId = card.flipped ? card.id : null;
+    setTimeout(() => (card.animating = false), DURATION);
   }
 
   scrollLeft() {
@@ -144,28 +143,28 @@ export class Attractions implements AfterViewInit {
     const currentScroll = el.scrollLeft;
     const maxScroll = el.scrollWidth - el.clientWidth;
 
-    if (currentScroll > maxScroll - this.cardWidth * this.originalCards.length * 1.5) {
-      this.appendCards();
-      return;
+    if (currentScroll > maxScroll - this.cardWidth * this.originalCards.length * 1.5) { 
+      this.appendCards(); 
+      return; 
     }
-
+    
     el.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
   }
 
   startAutoScroll(dir: 'left' | 'right') {
     if (this.isAdjusting) return;
 
-    this.holdDir = dir;
+    this.holdDir = dir; 
     this.lastTs = 0;
 
     const el = this.track.nativeElement;
-    el.style.scrollBehavior = 'auto'; 
+    el.style.scrollBehavior = 'auto';
 
     const step = (ts: number) => {
-      if (!this.holdDir) {
-        el.style.scrollBehavior = 'smooth';
-        this.rafId = null;
-        return;
+      if (!this.holdDir) { 
+        el.style.scrollBehavior = 'smooth'; 
+        this.rafId = null; 
+        return; 
       }
 
       if (!this.lastTs) this.lastTs = ts;
@@ -197,14 +196,14 @@ export class Attractions implements AfterViewInit {
     const threshold = this.cardWidth * this.originalCards.length * 1.5;
 
     if (dir === 'right') {
-      if (el.scrollLeft > maxScroll - threshold) {
-        this.appendCards();
+      if (el.scrollLeft > maxScroll - threshold) { 
+        this.appendCards(); 
         return; 
       }
       el.scrollLeft += amount;
     } else {
-      if (el.scrollLeft < threshold) {
-        this.prependCards();
+      if (el.scrollLeft < threshold) { 
+        this.prependCards(); 
         return; // deixa o próximo frame continuar
       }
       el.scrollLeft -= amount;
@@ -219,23 +218,22 @@ export class Attractions implements AfterViewInit {
     el.style.scrollBehavior = 'auto';
 
     const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++,
-      image: b.image,
-      caption: b.caption,
-      details: b.details,
-      flipped: false,
+      id: this.nextId++, 
+      image: b.image, 
+      caption: b.caption, 
+      details: b.details, 
+      flipped: false, 
+      animating: false,
     }));
     this.cards = [...block, ...this.cards];
 
     setTimeout(() => {
       el.scrollLeft = currentScroll + this.cardWidth * this.originalCards.length;
       setTimeout(() => {
-        
+
         el.style.scrollBehavior = this.holdDir ? 'auto' : 'smooth';
         this.isAdjusting = false;
-        if (!this.holdDir) {
-          el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
-        }
+        if (!this.holdDir) el.scrollBy({ left: -this.cardWidth, behavior: 'smooth' });
       }, 50);
     }, 0);
   }
@@ -244,20 +242,18 @@ export class Attractions implements AfterViewInit {
     this.isAdjusting = true;
 
     const block: CardVM[] = this.originalCards.map((b) => ({
-      id: this.nextId++,
-      image: b.image,
-      caption: b.caption,
-      details: b.details,
-      flipped: false,
+      id: this.nextId++, 
+      image: b.image, 
+      caption: b.caption, 
+      details: b.details, 
+      flipped: false, 
+      animating: false,
     }));
     this.cards = [...this.cards, ...block];
 
     setTimeout(() => {
       this.isAdjusting = false;
-      // se está segurando, o loop continua; se foi clique único, mantém a rolagem suave de 1 card
-      if (!this.holdDir) {
-        this.track.nativeElement.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
-      }
+      if (!this.holdDir) this.track.nativeElement.scrollBy({ left: this.cardWidth, behavior: 'smooth' });
     }, 50);
   }
 
