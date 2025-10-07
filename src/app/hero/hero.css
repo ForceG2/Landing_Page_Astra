@@ -116,7 +116,6 @@
   .hero-container .earth-image {
     transform: translateX(20%); 
     max-width: 150%;
-    animation: none;
   }
 }
 
