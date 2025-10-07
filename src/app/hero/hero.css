@@ -3,18 +3,18 @@
   align-items: center; 
   justify-content: flex-start;
   position: relative;
-  padding: 0 0 0 150px;
-  min-height: 100vh; 
+  padding-bottom: 10vh;
+  min-height: 80vh; 
   overflow: hidden;
 }
 
 .text-container {
   flex: 1;
   z-index: 2;
-  max-width: 734px;
+  max-width: 38vw;
   padding: 40px 0;
   transform: translateY(-60px);
-  margin-left: 80px; 
+  margin-left: 12vw; 
 }
 
 .description {
@@ -26,11 +26,11 @@
 
 .image-container {
   position: absolute;
-  top: -12vh;    
-  right: -10vw;
+  top: -15vh;    
+  right: -7vw;
   width: 55vw;
-  min-width: 700px;
-  max-width: 1100px;
+  min-width: 55vw;
+  max-width: 76vw;
   z-index: 1;
   animation: floatY 9s ease-in-out infinite;
   will-change: transform;
@@ -63,153 +63,5 @@
   }
   50% {
     transform: translate3d(20px, 0, 0);
-  }
-}
-
-@media (max-width: 1600px) {
-  .text-container {
-    transform: translateY(-50px);
-    margin-left: 60px;
-    max-width: 650px;
-  }
-}
-
-@media (max-width: 1366px) {
-  .text-container {
-    transform: translateY(-40px);
-    margin-left: 50px;
-    max-width: 580px;
-  }
-  
-  .hero-container {
-    padding: 0 0 0 100px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .text-container {
-    transform: translateY(-30px);
-    margin-left: 30px;
-    max-width: 500px;
-  }
-  
-  .hero-container {
-    padding: 0 0 0 60px;
-  }
-}
-
-/* telas maiores que Full HD */
-@media (min-width: 2560px) {
-  .text-container {
-    transform: translateY(-80px);
-    margin-left: 120px;
-    max-width: 900px;
-  }
-  
-  .hero-container {
-    padding: 0 0 0 200px;
-  }
-}
-
-@media (min-width: 3840px) { /* 4K */
-  .text-container {
-    transform: translateY(-120px);
-    margin-left: 160px;
-    max-width: 1200px;
-  }
-  
-  .hero-container {
-    padding: 0 0 0 300px;
-  }
-}
-
-/* ajustes de altura */
-@media (max-height: 768px) {
-  .text-container {
-    transform: translateY(-30px);
-    margin-left: 40px;
-    padding: 20px 0;
-  }
-  
-  .hero-container {
-    min-height: 600px;
-    padding: 80px 0 80px 80px;
-  }
-  
-  .image-container {
-    top: -20vh;
-  }
-}
-
-@media (min-height: 900px) and (max-height: 1079px) {
-  .text-container {
-    transform: translateY(-55px);
-    margin-left: 70px;
-  }
-  
-  .image-container {
-    top: -25vh;
-    right: -7vw;
-  }
-}
-
-@media (min-height: 1080px) and (max-height: 1439px) {
-  .text-container {
-    transform: translateY(-60px);
-    margin-left: 80px;
-  }
-  
-  .image-container {
-    top: 0vh;
-  }
-}
-
-@media (min-height: 1440px) {
-  .text-container {
-    transform: translateY(-80px);
-    margin-left: 100px;
-    padding: 60px 0;
-  }
-  
-  .image-container {
-    top: 5vh;
-  }
-}
-
-/* Combinações específicas para manter proporções */
-@media (min-width: 1920px) and (min-height: 1080px) {
-  /* minha tela - valores padrão já definidos */
-}
-
-@media (min-width: 1920px) and (max-height: 1080px) {
-  /* Telas ultrawide */
-  .text-container {
-    transform: translateY(-40px);
-    margin-left: 100px;
-  }
-}
-
-/* Tablets e telas menores */
-@media (max-width: 768px) {
-  .hero-container {
-    padding: 0 0 0 40px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .text-container {
-    transform: translateY(-20px);
-    margin-left: 0;
-    max-width: 100%;
-    padding: 20px 40px 20px 0;
-  }
-  
-  .image-container {
-    position: relative;
-    top: 0;
-    right: 0;
-    width: 100%;
-    min-width: auto;
-    margin-top: 40px;
   }
 }
