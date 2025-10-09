@@ -18,6 +18,7 @@ export class Attractions implements OnInit, AfterViewInit {
   private readonly INITIAL_REPEAT_FACTOR = 5;
   private readonly SCROLL_THRESHOLD_FACTOR = 1.5;
   private readonly HOLD_SCROLL_SPEED = 700;
+  private readonly CARDS_TO_SCROLL = 3;
 
   private readonly originalCards: BaseCard[] = [
     {
@@ -61,6 +62,7 @@ export class Attractions implements OnInit, AfterViewInit {
   private autoScrollRafId: number | null = null;
   private autoScrollDirection: 'left' | 'right' | null = null;
   private lastFrameTimestamp = 0;
+  private pointerDownTime = 0;
 
   ngOnInit(): void {
     const repeatedCards: CardVM[] = [];
@@ -89,7 +91,6 @@ export class Attractions implements OnInit, AfterViewInit {
   }
 
   // lógica de Interação com cards 
-
   onCardKeydown(event: KeyboardEvent, card: CardVM): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -120,34 +121,35 @@ export class Attractions implements OnInit, AfterViewInit {
     setTimeout(() => (card.animating = false), this.FLIP_ANIMATION_DURATION);
   }
 
-  // lógica de scroll (click)
-  scrollLeft(): void {
-    this.scrollByAmount(-this.cardWidth);
-  }
-
-  scrollRight(): void {
-    this.scrollByAmount(this.cardWidth);
-  }
-  
-  // lógica de scroll (hold) 
+  // lógica de scroll - (clique rápido = 3 cards, hold = contínuo)
   startAutoScroll(direction: 'left' | 'right'): void {
     if (this.isAdjustingTrack) return;
 
+    this.pointerDownTime = Date.now();
     this.autoScrollDirection = direction;
     this.lastFrameTimestamp = 0;
     this.track.nativeElement.style.scrollBehavior = 'auto';
     
-    // inicia o loop de animação
     if (this.autoScrollRafId) cancelAnimationFrame(this.autoScrollRafId);
     this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
   }
 
   stopAutoScroll(): void {
-    this.autoScrollDirection = null;
+    const holdDuration = Date.now() - this.pointerDownTime;
+    const wasQuickClick = holdDuration < 150; // se foi menos de 150ms, é clique rápido
+    
     if (this.autoScrollRafId) {
       cancelAnimationFrame(this.autoScrollRafId);
       this.autoScrollRafId = null;
     }
+
+    // se foi um clique rápido, faz o scroll de 3 cards
+    if (wasQuickClick && this.autoScrollDirection) {
+      const direction = this.autoScrollDirection === 'left' ? -1 : 1;
+      this.scrollByAmount(direction * this.cardWidth * this.CARDS_TO_SCROLL, true);
+    }
+
+    this.autoScrollDirection = null;
     this.track.nativeElement.style.scrollBehavior = 'smooth';
   }
 
@@ -161,12 +163,12 @@ export class Attractions implements OnInit, AfterViewInit {
     const scrollAmount = this.HOLD_SCROLL_SPEED * deltaTime;
     const directionMultiplier = this.autoScrollDirection === 'left' ? -1 : 1;
     
-    this.scrollByAmount(scrollAmount * directionMultiplier, false);
+    this.scrollByAmountDirect(scrollAmount * directionMultiplier);
 
     this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
   };
   
-  // lógica carrossel infinito 
+  // lógica carrossel infinito
   private scrollByAmount(amount: number, smooth = true): void {
     if (this.isAdjustingTrack) return;
     
@@ -176,6 +178,25 @@ export class Attractions implements OnInit, AfterViewInit {
       this.prependCards();
     } else {
       this.track.nativeElement.scrollBy({ left: amount, behavior: smooth ? 'smooth' : 'auto' });
+    }
+  }
+
+  private scrollByAmountDirect(amount: number): void {
+    if (this.isAdjustingTrack) return;
+    
+    const el = this.track.nativeElement;
+    
+    if (amount > 0 && this.isNearEnd()) {
+      this.appendCards();
+      el.scrollBy({ left: amount, behavior: 'auto' });
+    } else if (amount < 0 && this.isNearStart()) {
+      const currentScroll = el.scrollLeft;
+      this.prependCards();
+      requestAnimationFrame(() => {
+        el.scrollLeft = currentScroll + this.getOriginalBlockWidth() + amount;
+      });
+    } else {
+      el.scrollBy({ left: amount, behavior: 'auto' });
     }
   }
 
@@ -218,8 +239,6 @@ export class Attractions implements OnInit, AfterViewInit {
       animating: false,
     }));
   }
-
-
 
   private updateCardWidth(): void {
     const cardEl = this.track.nativeElement.querySelector<HTMLElement>('.card');
