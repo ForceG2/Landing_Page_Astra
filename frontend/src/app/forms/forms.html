@@ -30,9 +30,11 @@
     </div>
 
     <p>Data de nascimento</p>
-    <input formControlName="dataNascimento" type="date" required />
+    <input formControlName="dataNascimento" type="date" required min="1915-01-01" max="2013-01-01" />
     <div class="error" *ngIf="formData.get('dataNascimento')?.touched && formData.get('dataNascimento')?.invalid">
-      Data de nascimento é obrigatória.
+      <span *ngIf="formData.get('dataNascimento')?.errors?.['required']"> Data de nascimento é obrigatória.</span>
+      <span *ngIf="formData.get('dataNascimento')?.errors?.['minData']"> Data mínima: 01/01/1915.</span>
+      <span *ngIf="formData.get('dataNascimento')?.errors?.['maxData']"> Data máxima: 31/12/2013.</span>
     </div>
 
     <div class="checkbox-container">

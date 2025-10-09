@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common'; 
 import { sendEmail } from '../service/emailService';
 
@@ -14,7 +14,10 @@ export class Forms {
     nome: new FormControl('', Validators.required),
     email: new FormControl('', [Validators.required, Validators.email]),
     telefone: new FormControl('', Validators.required),
-    dataNascimento: new FormControl('', Validators.required),
+    dataNascimento: new FormControl('', [
+      Validators.required,
+      this.validarDataNascimento
+    ]),
     termos: new FormControl(false, Validators.requiredTrue)
   });
 
@@ -39,6 +42,19 @@ toastVisible = false;
     this.toastVisible = true;
     setTimeout(() => {
       this.toastVisible = false;
-    }, 3000); // toast desaparece após 3 segundos
+    }, 3000); 
+  }
+
+  validarDataNascimento(control: AbstractControl) {
+    if (!control.value) return null;
+
+    const data = new Date(control.value);
+    const minData = new Date('1915-01-01');
+    const maxData = new Date('2013-12-31');
+
+    if (data < minData) return { minData: true };
+    if (data > maxData) return { maxData: true };
+
+    return null;
   }
 }
