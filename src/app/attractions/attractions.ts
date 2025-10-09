@@ -19,6 +19,8 @@ export class Attractions implements OnInit, AfterViewInit {
   private readonly SCROLL_THRESHOLD_FACTOR = 1.5;
   private readonly HOLD_SCROLL_SPEED = 700;
   private readonly CARDS_TO_SCROLL = 3;
+  private readonly HOLD_ACTIVATION_DELAY = 180; 
+  private holdTimerId: number | null = null;
 
   private readonly originalCards: BaseCard[] = [
     {
@@ -123,50 +125,60 @@ export class Attractions implements OnInit, AfterViewInit {
 
   // lógica de scroll - (clique rápido = 3 cards, hold = contínuo)
   startAutoScroll(direction: 'left' | 'right'): void {
-    if (this.isAdjustingTrack) return;
+  if (this.isAdjustingTrack) return;
 
-    this.pointerDownTime = Date.now();
-    this.autoScrollDirection = direction;
-    this.lastFrameTimestamp = 0;
+  this.pointerDownTime = Date.now();
+  this.autoScrollDirection = direction;
+  this.lastFrameTimestamp = 0;
+
+  // cancela qualquer rAF/timer pendente
+  if (this.autoScrollRafId) cancelAnimationFrame(this.autoScrollRafId);
+  if (this.holdTimerId) { clearTimeout(this.holdTimerId); this.holdTimerId = null; }
+
+  // evita o "mini movimento" inicial
+  this.holdTimerId = window.setTimeout(() => {
+    this.holdTimerId = null;
     this.track.nativeElement.style.scrollBehavior = 'auto';
-    
-    if (this.autoScrollRafId) cancelAnimationFrame(this.autoScrollRafId);
     this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
-  }
+  }, this.HOLD_ACTIVATION_DELAY);
+}
 
-  stopAutoScroll(): void {
-    const holdDuration = Date.now() - this.pointerDownTime;
-    const wasQuickClick = holdDuration < 150; // se foi menos de 150ms, é clique rápido
-    
-    if (this.autoScrollRafId) {
-      cancelAnimationFrame(this.autoScrollRafId);
-      this.autoScrollRafId = null;
-    }
+stopAutoScroll(): void {
+  const holdDuration = Date.now() - this.pointerDownTime;
+  const wasQuickClick = holdDuration < this.HOLD_ACTIVATION_DELAY;
 
-    // se foi um clique rápido, faz o scroll de 3 cards
-    if (wasQuickClick && this.autoScrollDirection) {
-      const direction = this.autoScrollDirection === 'left' ? -1 : 1;
-      this.scrollByAmount(direction * this.cardWidth * this.CARDS_TO_SCROLL, true);
-    }
+  // cancela rAF/timer se existirem
+  if (this.holdTimerId) { clearTimeout(this.holdTimerId); this.holdTimerId = null; }
+  if (this.autoScrollRafId) { cancelAnimationFrame(this.autoScrollRafId); this.autoScrollRafId = null; }
 
-    this.autoScrollDirection = null;
+  // se foi um clique rápido, faz o scroll de 3 cards
+  if (wasQuickClick && this.autoScrollDirection) {
+    const direction = this.autoScrollDirection === 'left' ? -1 : 1;
+    // suave
+    this.track.nativeElement.style.scrollBehavior = 'smooth';
+    this.scrollByAmount(direction * this.cardWidth * this.CARDS_TO_SCROLL, true);
+  } else {
+    // se estava em hold, volta o comportamento padrão suave
     this.track.nativeElement.style.scrollBehavior = 'smooth';
   }
 
-  private autoScrollStep = (timestamp: number): void => {
-    if (!this.autoScrollDirection) return;
+  this.autoScrollDirection = null;
+}
 
-    if (!this.lastFrameTimestamp) this.lastFrameTimestamp = timestamp;
-    const deltaTime = Math.min((timestamp - this.lastFrameTimestamp) / 1000, 0.05);
-    this.lastFrameTimestamp = timestamp;
+private autoScrollStep = (timestamp: number): void => {
+  if (!this.autoScrollDirection) return;
 
-    const scrollAmount = this.HOLD_SCROLL_SPEED * deltaTime;
-    const directionMultiplier = this.autoScrollDirection === 'left' ? -1 : 1;
-    
-    this.scrollByAmountDirect(scrollAmount * directionMultiplier);
+  if (!this.lastFrameTimestamp) this.lastFrameTimestamp = timestamp;
+  const deltaTime = Math.min((timestamp - this.lastFrameTimestamp) / 1000, 0.05);
+  this.lastFrameTimestamp = timestamp;
 
-    this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
-  };
+  const scrollAmount = this.HOLD_SCROLL_SPEED * deltaTime;
+  const directionMultiplier = this.autoScrollDirection === 'left' ? -1 : 1;
+
+  this.scrollByAmountDirect(scrollAmount * directionMultiplier);
+
+  this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
+};
   
   // lógica carrossel infinito
   private scrollByAmount(amount: number, smooth = true): void {
