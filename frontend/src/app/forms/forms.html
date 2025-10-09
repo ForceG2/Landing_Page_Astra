@@ -11,9 +11,10 @@
     <h3>Inscreva-se</h3>
 
     <p>Nome completo</p>
-    <input formControlName="nome" type="text" placeholder="Nome completo" required />
+    <input formControlName="nome" type="text" placeholder="Nome completo" required minlength="2"/>
     <div class="error" *ngIf="formData.get('nome')?.touched && formData.get('nome')?.invalid">
-      Nome é obrigatório.
+      <span *ngIf="formData.get('nome')?.errors?.['required']">Nome é obrigatório.</span>
+      <span *ngIf="formData.get('nome')?.errors?.['minlength']">Nome inválido.</span>
     </div>
 
     <p>E-mail</p>
@@ -24,9 +25,13 @@
     </div>
 
     <p>Telefone</p>
-    <input formControlName="telefone" type="tel" placeholder="DDD + Telefone" required />
+    <input formControlName="telefone" type="tel" placeholder="DDD + Telefone" required pattern="^[0-9]*$" maxlength="11" minlength="11" />
     <div class="error" *ngIf="formData.get('telefone')?.touched && formData.get('telefone')?.invalid">
-      Telefone é obrigatório.
+    {{
+      formData.get('telefone')?.errors?.['required'] ? 'Telefone é obrigatório.' :
+      formData.get('telefone')?.errors?.['pattern'] ? 'Apenas números são permitidos.' :
+      formData.get('telefone')?.errors?.['minlength'] ? 'Telefone inválido' : ''
+    }}
     </div>
 
     <p>Data de nascimento</p>

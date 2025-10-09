@@ -11,9 +11,9 @@ import { sendEmail } from '../service/emailService';
 })
 export class Forms {
   formData = new FormGroup({
-    nome: new FormControl('', Validators.required),
+    nome: new FormControl('', [Validators.required, Validators.minLength(2)]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    telefone: new FormControl('', Validators.required),
+    telefone: new FormControl('', [Validators.required, Validators.pattern('^[0-9]*$'), Validators.maxLength(11), Validators.minLength(11)]),
     dataNascimento: new FormControl('', [
       Validators.required,
       this.validarDataNascimento
