@@ -4,56 +4,91 @@
     <h2 class="title">O próximo viajante espacial pode ser você!</h2>
   </div>
   <div class="form-box">
-    <div *ngIf="toastVisible" class="toast">
-      Inscrição realizada com sucesso!
-    </div>
-  <form [formGroup]="formData" (ngSubmit)="submitForm()">
-    <h3>Inscreva-se</h3>
+    <div *ngIf="toastVisible" class="toast">Inscrição realizada com sucesso!</div>
+    <form [formGroup]="formData" (ngSubmit)="submitForm()">
+      <h3>Inscreva-se</h3>
 
-    <p>Nome completo</p>
-    <input formControlName="nome" type="text" placeholder="Nome completo" required minlength="2"/>
-    <div class="error" *ngIf="formData.get('nome')?.touched && formData.get('nome')?.invalid">
-      <span *ngIf="formData.get('nome')?.errors?.['required']">Nome é obrigatório.</span>
-      <span *ngIf="formData.get('nome')?.errors?.['minlength']">Nome inválido.</span>
-    </div>
+      <p>Nome completo</p>
+      <input
+        formControlName="nome"
+        type="text"
+        placeholder="Nome completo"
+        required
+        minlength="2"
+      />
+      <div class="error" *ngIf="formData.get('nome')?.touched && formData.get('nome')?.invalid">
+        <span *ngIf="formData.get('nome')?.errors?.['required']">Nome é obrigatório.</span>
+        <span *ngIf="formData.get('nome')?.errors?.['minlength']">Nome inválido.</span>
+      </div>
 
-    <p>E-mail</p>
-    <input formControlName="email" type="email" placeholder="email@exemplo.com" required />
-    <div class="error" *ngIf="formData.get('email')?.touched && formData.get('email')?.invalid">
-      <span *ngIf="formData.get('email')?.errors?.['required']">Email é obrigatório.</span>
-      <span *ngIf="formData.get('email')?.errors?.['email']">Email inválido.</span>
-    </div>
+      <p>E-mail</p>
+      <input formControlName="email" type="email" placeholder="email@exemplo.com" required />
+      <div class="error" *ngIf="formData.get('email')?.touched && formData.get('email')?.invalid">
+        <span *ngIf="formData.get('email')?.errors?.['required']">Email é obrigatório.</span>
+        <span *ngIf="formData.get('email')?.errors?.['email']">Email inválido.</span>
+      </div>
 
-    <p>Telefone</p>
-    <input formControlName="telefone" type="tel" placeholder="DDD + Telefone" required pattern="^[0-9]*$" maxlength="11" minlength="11" />
-    <div class="error" *ngIf="formData.get('telefone')?.touched && formData.get('telefone')?.invalid">
-    {{
+      <p>Telefone</p>
+      <input
+        formControlName="telefone"
+        type="tel"
+        placeholder="DDD + Telefone"
+        required
+        pattern="^[0-9]*$"
+        maxlength="11"
+        minlength="11"
+      />
+      <div
+        class="error"
+        *ngIf="formData.get('telefone')?.touched && formData.get('telefone')?.invalid"
+      >
+        {{
       formData.get('telefone')?.errors?.['required'] ? 'Telefone é obrigatório.' :
       formData.get('telefone')?.errors?.['pattern'] ? 'Apenas números são permitidos.' :
       formData.get('telefone')?.errors?.['minlength'] ? 'Telefone inválido' : ''
-    }}
-    </div>
-
-    <p>Data de nascimento</p>
-    <input formControlName="dataNascimento" type="date" required min="1915-01-01" max="2013-01-01" />
-    <div class="error" *ngIf="formData.get('dataNascimento')?.touched && formData.get('dataNascimento')?.invalid">
-      <span *ngIf="formData.get('dataNascimento')?.errors?.['required']"> Data de nascimento é obrigatória.</span>
-      <span *ngIf="formData.get('dataNascimento')?.errors?.['minData']"> Data mínima: 01/01/1915.</span>
-      <span *ngIf="formData.get('dataNascimento')?.errors?.['maxData']"> Data máxima: 31/12/2013.</span>
-    </div>
-
-    <div class="checkbox-container">
-      <div class="checkbox-label">
-        <input formControlName="termos" type="checkbox" id="termos" required />
-        <label for="termos">Concordo com os termos e condições</label>
+        }}
       </div>
-      <div class="error" *ngIf="formData.get('termos')?.touched && formData.get('termos')?.invalid">
-        Você precisa aceitar os termos.
+
+      <p>Data de nascimento</p>
+      <input
+        formControlName="dataNascimento"
+        type="date"
+        required
+        min="1915-01-01"
+        max="2013-01-01"
+      />
+      <div
+        class="error"
+        *ngIf="formData.get('dataNascimento')?.touched && formData.get('dataNascimento')?.invalid"
+      >
+        <span *ngIf="formData.get('dataNascimento')?.errors?.['required']">
+          Data de nascimento é obrigatória.</span
+        >
+        <span *ngIf="formData.get('dataNascimento')?.errors?.['minData']">
+          Data mínima: 01/01/1915.</span
+        >
+        <span *ngIf="formData.get('dataNascimento')?.errors?.['maxData']">
+          Data máxima: 31/12/2013.</span
+        >
       </div>
-    </div>
 
+      <div class="checkbox-container">
+        <div class="checkbox-label">
+          <input formControlName="termos" type="checkbox" id="termos" required />
+          <label for="termos">Concordo com os termos e condições</label>
+        </div>
+        <div
+          class="error"
+          *ngIf="formData.get('termos')?.touched && formData.get('termos')?.invalid"
+        >
+          Você precisa aceitar os termos.
+        </div>
+      </div>
 
-    <button type="submit" [disabled]="formData.invalid">Quero ir ao espaço!</button>
-  </form>
+      <button type="submit" [disabled]="formData.invalid || carregando">
+        <span *ngIf="!carregando">Quero ir ao espaço!</span>
+        <span *ngIf="carregando" class="spinner"></span>
+      </button>
+    </form>
   </div>
 </section>
