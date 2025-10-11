@@ -1,15 +1,15 @@
-<nav class="header-container" role="navigation">
+<nav class="header-container">
   <ul class="menu">
-    <li><a href="#about">Sobre</a></li>
-    <li><a href="#trajectory">Trajetória</a></li>
-    <li><a href="#attractions">Atrativos</a></li>
+    <li><a href="#about" (click)="scrollParaSecao($event, 'about')">Sobre</a></li>
+    <li><a href="#attractions" (click)="scrollParaSecao($event, 'attractions')">Atrativos</a></li>
+    <li><a href="#trajectory" (click)="scrollParaSecao($event, 'trajectory')">Trajetória</a></li>
   </ul>
 
   <div class="astra">ASTRA</div>
 
   <ul class="menu">
-    <li><a href="#depoimentos">Depoimentos</a></li>
-    <li><a href="#form">Inscrição</a></li>
-    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#depoimentos" (click)="scrollParaSecao($event, 'depoimentos')">Depoimentos</a></li>
+    <li><a href="#form" (click)="scrollParaSecao($event, 'form')">Inscrição</a></li>
+    <li><a href="#faq" (click)="scrollParaSecao($event, 'faq')">FAQ</a></li>
   </ul>
 </nav>
