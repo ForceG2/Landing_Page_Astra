@@ -5,6 +5,8 @@
 .faq-container .title {
   padding-bottom: 10px;
   text-align: center;
+  margin-left: 0px;
+  padding: 0px 5px;
 }
 
 .faq-list {
