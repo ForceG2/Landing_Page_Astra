@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, QueryList, ViewChildren, AfterViewInit } from '@angular/core';
+
 
 @Component({
   selector: 'app-faq',
@@ -8,7 +9,7 @@ import { Component } from '@angular/core';
   templateUrl: './faq.html',
   styleUrl: './faq.css',
 })
-export class Faq {
+export class Faq implements AfterViewInit {
   openIndex: number | null = null;
 
   faqs = [
@@ -38,7 +39,34 @@ export class Faq {
   },
 ];
 
+  @ViewChildren('answer') answers!: QueryList<ElementRef<HTMLDivElement>>;
+  answerHeights: number[] = [];
+
+  ngAfterViewInit(): void {
+    // calcula alturas iniciais
+    this.calculateHeights();
+
+    // recalcula se o QueryList mudar
+    this.answers.changes.subscribe(() => {
+      // timeout para garantir render
+      setTimeout(() => this.calculateHeights());
+    });
+  }
+
+  calculateHeights(): void {
+    this.answerHeights = this.answers.map(a => {
+      // retorna scrollHeight para cada div de resposta
+      return a.nativeElement.scrollHeight;
+    });
+  }
+
   toggle(index: number): void {
     this.openIndex = this.openIndex === index ? null : index;
+
+    // se a altura de algum conteúdo pode mudar, recalcule logo após abrir
+    if (this.openIndex !== null) {
+      // espera o browser renderizar o conteúdo aberto e então atualiza a altura
+      setTimeout(() => this.calculateHeights(), 60);
+    }
   }
 }
