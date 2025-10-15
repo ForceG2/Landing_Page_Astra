@@ -85,6 +85,10 @@
   margin: 0;
 }
 
+.checkbox-label input[type='checkbox']:checked {
+  accent-color: #004b9b;
+}
+
 .checkbox-label label {
   cursor: pointer;
 }
