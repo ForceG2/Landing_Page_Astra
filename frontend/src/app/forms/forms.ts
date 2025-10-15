@@ -77,9 +77,7 @@ export class Forms {
   phoneFormat(event: any) {
     let input = event.target.value.replace(/\D/g, '');
     if (input.length > 11) input = input.substring(0, 11);
-
     let formatted = input;
-
     if (input.length > 6) {
       formatted = `(${input.substring(0, 2)}) ${input.substring(2, 7)}-${input.substring(7)}`;
     } else if (input.length > 2) {
@@ -89,6 +87,6 @@ export class Forms {
     }
 
     event.target.value = formatted;
-    this.formData.get('telefone')?.setValue(formatted, { emitEvent: false });
+    this.formData.get('telefone')?.setValue(input, { emitEvent: false });
   }
 }
