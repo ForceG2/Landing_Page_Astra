@@ -21,17 +21,20 @@
       </span>
 
       <p>Telefone</p>
-      <input type="text" formControlName="telefone" placeholder="DDD + Telefone" />
+      <input
+        type="text"
+        formControlName="telefone"
+        placeholder="DDD + Telefone"
+        required
+        maxlength="15"
+        (input)="phoneFormat($event)"
+      />
       <span
         class="error"
         *ngIf="formData.get('telefone')?.touched && formData.get('telefone')?.invalid"
       >
         <span *ngIf="formData.get('telefone')?.errors?.['required']">Telefone é obrigatório.</span>
-        <span *ngIf="formData.get('telefone')?.errors?.['pattern']"
-          >Apenas números são permitidos.</span
-        >
         <span *ngIf="formData.get('telefone')?.errors?.['minlength']">Telefone inválido.</span>
-        <span *ngIf="formData.get('telefone')?.errors?.['maxlength']">Telefone inválido.</span>
       </span>
 
       <p>Data de Nascimento</p>
