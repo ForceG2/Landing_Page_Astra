@@ -1,1 +1,44 @@
-<p>testimony works!</p>
+<section class="testimonials-container">
+  <h2 class="title">Depoimentos</h2>
+
+  <div class="carousel">
+    <button
+      class="nav prev"
+      type="button"
+      aria-label="Anterior"
+      (click)="navigatePrev()"
+    >
+      &#10094;
+    </button>
+
+    <div class="track-container">
+      <div #track class="track" role="list">
+        <article
+          class="testimonial-card"
+          role="listitem"
+          *ngFor="let t of testimonials; trackBy: trackById"
+          tabindex="0"
+          [attr.aria-label]="'Depoimento de ' + t.author"
+        >
+          <blockquote class="quote">
+            <p class="quote-text">{{ t.quote }}</p>
+          </blockquote>
+          
+          <div class="author-info">
+            <p class="author-name">{{ t.author }}</p>
+            <p class="author-role">{{ t.role }}</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <button
+      class="nav next"
+      type="button"
+      aria-label="Próximo"
+      (click)="navigateNext()"
+    >
+      &#10095;
+    </button>
+  </div>
+</section>
