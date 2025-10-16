@@ -1,12 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-header',
-  imports: [],
   templateUrl: './header.html',
-  styleUrl: './header.css',
+  styleUrls: ['./header.css'],
 })
-export class Header {
+export class Header implements OnInit {
+  showBackground = false;
+  hidden = false;
+  private lastScrollTop = 0;
+
+  ngOnInit() {
+    this.updateBackground();
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+    if (scrollTop > this.lastScrollTop + 10) {
+      this.hidden = true;
+    } else if (scrollTop < this.lastScrollTop - 10) {
+      this.hidden = false;
+    }
+    this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+    this.updateBackground();
+  }
+
+  private updateBackground() {
+    this.showBackground = (window.scrollY || document.documentElement.scrollTop) > 0;
+  }
+
   scrollParaSecao(event: Event, id: string) {
     event.preventDefault();
     const elemento = document.getElementById(id);

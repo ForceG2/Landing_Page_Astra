@@ -1,4 +1,4 @@
-<nav class="header-container">
+<nav class="header-container" [class.scrolled]="showBackground" [class.hidden]="hidden">
   <ul class="menu">
     <li><a href="#about" (click)="scrollParaSecao($event, 'about')">Sobre</a></li>
     <li><a href="#attractions" (click)="scrollParaSecao($event, 'attractions')">Atrativos</a></li>
