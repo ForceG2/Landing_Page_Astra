@@ -20,8 +20,8 @@
 .header-container.scrolled {
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  background-color: transparent; 
-  background-color: rgba(0, 0, 0, 0.85); 
+  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.85);
   border: 2px solid rgba(0, 150, 255, 0.5);
 }
 
@@ -69,4 +69,48 @@ html {
 
 .header-spacer {
   height: 50px;
+}
+
+@media screen and (max-width: 1024px) {
+  .header-container {
+    gap: 20px;
+    padding: 12px 24px;
+  }
+  .header-container.scrolled {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.85);
+    border: 2px solid rgba(0, 150, 255, 0.5);
+  }
+
+  .header-container.hidden {
+    transform: translate(-50%, -150%);
+  }
+
+  .menu a {
+    font-size: 16px;
+    padding: 3px 5px;
+  }
+
+  .astra {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .header-container {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 16px;
+    align-items: center;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .astra {
+    font-size: 18px;
+  }
 }
