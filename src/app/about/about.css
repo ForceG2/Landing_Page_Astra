@@ -1,9 +1,10 @@
 .about-container {
-  padding: 80px 10px;
-  padding-left: 150px;
-  gap: 50px;
+  padding: 80px 20px 80px 0px;
   display: flex;
-  align-items: flex-start;              
+  gap: 100px;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto; 
 }
 
 .about-container .title {
@@ -20,7 +21,7 @@
 
 .scientist-image {
   width: 100%;      
-  border-radius: 10px;
+  border-radius:8px;
 }
 
 .text-container {
@@ -28,5 +29,16 @@
 }
 
 .image-container {
-  flex: 0 0 500px;      
+  flex: 0 0 500px;
+  border: 2px solid rgba(0, 150, 255, 0.6);
+  padding: 20px;
+  border-radius: 16px;     
+}
+
+.description.full {
+  display: block;
+}
+
+.description.short {
+  display: none;
 }
