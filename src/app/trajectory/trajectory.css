@@ -182,12 +182,6 @@
     margin-right: 0;
     margin-bottom: 35px;
   }
-  .trajectory-container .description {
-    font-size: 2rem;
-    margin-right: 0;
-    margin-bottom: 50px;
-  }
-
   .earth {
     width: 160px;
     top: 45%;
@@ -216,5 +210,54 @@
 
   .label {
     font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .trajectory-container {
+    position: relative;
+    padding-bottom: 60px;
+    height: 500px;
+  }
+
+  .trajectory-container .title {
+    font-size: 20px;
+    margin-right: 0;
+    margin-bottom: 35px;
+  }
+  .trajectory-container .trajectory-subtitle {
+    font-size: 13px;
+    margin-right: 0;
+    margin-bottom: 50px;
+  }
+
+  .earth {
+    width: 100px;
+    top: 35%;
+    left: 10%;
+  }
+  .moon {
+    width: 70px;
+    top: 25%;
+    left: 36%;
+  }
+  .space_station {
+    width: 68px;
+    top: 48%;
+    left: 53%;
+  }
+  .mars {
+    width: 120px;
+    top: 29%;
+    left: 66%;
+  }
+  .rocket {
+    width: 25px;
+    top: 30%;
+    left: 10%;
+  }
+
+  .label {
+    font-size: 10px;
   }
 }
