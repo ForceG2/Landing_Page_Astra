@@ -1,5 +1,9 @@
 *, *::before, *::after { box-sizing: border-box }
 
+.testimonials-container {
+  padding-bottom: 80px
+}
+
 .testimonials {
   padding: 80px 32px;
   position: relative
