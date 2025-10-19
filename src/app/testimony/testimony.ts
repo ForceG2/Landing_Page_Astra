@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild, AfterViewInit, HostListener, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  HostListener,
+  OnInit
+} from '@angular/core';
 
 type BaseTestimonial = { quote: string; author: string; role: string };
 type TestimonialVM = BaseTestimonial & { id: number };
@@ -13,9 +20,7 @@ type TestimonialVM = BaseTestimonial & { id: number };
 })
 export class Testimonials implements OnInit, AfterViewInit {
   @ViewChild('track', { static: true }) track!: ElementRef<HTMLDivElement>;
-
-  private readonly INITIAL_REPEAT_FACTOR = 5;
-  private readonly SCROLL_THRESHOLD_FACTOR = 1.5;
+  @ViewChild('trackContainer', { static: true }) trackContainer!: ElementRef<HTMLDivElement>;
 
   private readonly originalTestimonials: BaseTestimonial[] = [
     {
@@ -41,25 +46,19 @@ export class Testimonials implements OnInit, AfterViewInit {
   ];
 
   testimonials: TestimonialVM[] = [];
-  private cardWidth = 0;
   private nextId = 1;
-  private isTeleporting = false;
+  private cardWidth = 0;
   private currentIndex = 0;
 
   ngOnInit(): void {
-    const repeatedTestimonials: TestimonialVM[] = [];
-    for (let i = 0; i < this.INITIAL_REPEAT_FACTOR; i++) {
-      repeatedTestimonials.push(...this.createTestimonialBlock());
-    }
-    this.testimonials = repeatedTestimonials;
-    this.currentIndex = Math.floor(this.testimonials.length / 2);
+    // NÃO repetimos mais — apenas os originais
+    this.testimonials = this.originalTestimonials.map(t => ({ ...t, id: this.nextId++ }));
+    this.currentIndex = 0;
   }
 
   ngAfterViewInit(): void {
     this.updateCardWidth();
-    requestAnimationFrame(() => {
-      this.scrollToIndex(this.currentIndex);
-    });
+    requestAnimationFrame(() => this.scrollToIndex(this.currentIndex, false));
   }
 
   trackById(_index: number, item: TestimonialVM): number {
@@ -69,83 +68,49 @@ export class Testimonials implements OnInit, AfterViewInit {
   @HostListener('window:resize')
   onResize(): void {
     this.updateCardWidth();
-    this.scrollToIndex(this.currentIndex);
+    this.scrollToIndex(this.currentIndex, false);
+  }
+
+  get canPrev(): boolean {
+    return this.currentIndex > 0;
+  }
+
+  get canNext(): boolean {
+    return this.currentIndex < this.testimonials.length - 1;
   }
 
   navigatePrev(): void {
-    this.currentIndex--;
-    this.scrollToCurrentIndex();
-    this.ensureLoop();
+    if (!this.canPrev) return;
+    this.currentIndex = Math.max(0, this.currentIndex - 1);
+    this.scrollToIndex(this.currentIndex, true);
   }
 
   navigateNext(): void {
-    this.currentIndex++;
-    this.scrollToCurrentIndex();
-    this.ensureLoop();
+    if (!this.canNext) return;
+    this.currentIndex = Math.min(this.testimonials.length - 1, this.currentIndex + 1);
+    this.scrollToIndex(this.currentIndex, true);
   }
 
-  private scrollToCurrentIndex(): void {
-    const el = this.track.nativeElement;
-    el.style.scrollBehavior = 'smooth';
-    this.scrollToIndex(this.currentIndex);
-  }
-
-  private scrollToIndex(index: number): void {
-    const el = this.track.nativeElement;
-    const targetScroll = index * this.cardWidth;
-    el.scrollLeft = targetScroll;
-  }
-
-  private ensureLoop(): void {
-    if (this.isTeleporting) return;
-
-    setTimeout(() => {
-      const threshold = this.getScrollThreshold();
-      const totalCards = this.testimonials.length;
-      const blockSize = this.originalTestimonials.length;
-
-      if (this.currentIndex < threshold / this.cardWidth) {
-        this.teleportToEquivalent(blockSize);
-      } else if (this.currentIndex > totalCards - (threshold / this.cardWidth)) {
-        this.teleportToEquivalent(-blockSize);
-      }
-    }, 500);
-  }
-
-  private teleportToEquivalent(offset: number): void {
-    this.isTeleporting = true;
-    const el = this.track.nativeElement;
-    
-    this.currentIndex += offset;
-    
-    el.style.scrollBehavior = 'auto';
-    this.scrollToIndex(this.currentIndex);
-    el.style.scrollBehavior = 'smooth';
-    
-    this.isTeleporting = false;
-  }
-
-  private createTestimonialBlock(): TestimonialVM[] {
-    return this.originalTestimonials.map(baseTestimonial => ({
-      ...baseTestimonial,
-      id: this.nextId++,
-    }));
+  private scrollToIndex(index: number, smooth = true): void {
+    const trackEl = this.track.nativeElement;
+    const containerEl = this.trackContainer.nativeElement;
+    const scrollLeft = index * this.cardWidth;
+    if (smooth) {
+      trackEl.style.scrollBehavior = 'smooth';
+    } else {
+      trackEl.style.scrollBehavior = 'auto';
+    }
+    trackEl.scrollLeft = scrollLeft;
   }
 
   private updateCardWidth(): void {
-    const cardEl = this.track.nativeElement.querySelector<HTMLElement>('.testimonial-card');
-    if (cardEl) {
-      const style = window.getComputedStyle(this.track.nativeElement);
-      const gap = parseInt(style.gap) || 0;
-      this.cardWidth = cardEl.offsetWidth + gap;
-    }
-  }
-
-  private getScrollThreshold(): number {
-    return this.getOriginalBlockWidth() * this.SCROLL_THRESHOLD_FACTOR;
-  }
-
-  private getOriginalBlockWidth(): number {
-    return this.cardWidth * this.originalTestimonials.length;
+    const containerEl = this.trackContainer.nativeElement;
+    this.cardWidth = containerEl.clientWidth || containerEl.getBoundingClientRect().width || 0;
+    const cards = Array.from(this.track.nativeElement.querySelectorAll<HTMLElement>('.testimonial-card'));
+    cards.forEach(card => {
+      card.style.minWidth = `${this.cardWidth}px`;
+      card.style.maxWidth = `${this.cardWidth}px`;
+      card.style.width = `${this.cardWidth}px`;
+    });
   }
 }

@@ -7,11 +7,13 @@
       type="button"
       aria-label="Anterior"
       (click)="navigatePrev()"
+      [disabled]="!canPrev"
+      [attr.aria-disabled]="!canPrev"
     >
       &#10094;
     </button>
 
-    <div class="track-container">
+    <div class="track-container" #trackContainer>
       <div #track class="track" role="list">
         <article
           class="testimonial-card"
@@ -37,6 +39,8 @@
       type="button"
       aria-label="Próximo"
       (click)="navigateNext()"
+      [disabled]="!canNext"
+      [attr.aria-disabled]="!canNext"
     >
       &#10095;
     </button>

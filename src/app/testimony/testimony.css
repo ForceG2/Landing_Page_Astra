@@ -29,18 +29,22 @@
 }
 
 .track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 100%;
+  display: flex;
+  flex-direction: row;
   gap: 0;
-  overflow-x: hidden;
+  overflow-x: auto;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
 .track::-webkit-scrollbar { display: none }
 
 .testimonial-card {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  box-sizing: border-box;
   position: relative;
   border-radius: 20px;
   background: rgba(12, 20, 35, 0.6);
@@ -55,13 +59,27 @@
   min-height: 400px;
   user-select: none;
   scroll-snap-align: center;
-  width: 100%;
 }
 
 .testimonial-card:focus-visible {
   box-shadow:
     0 0 0 4px rgba(0, 150, 255, 0.15) inset,
     0 0 0 3px rgba(0, 200, 255, 0.9)
+}
+
+.nav[disabled],
+.nav[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: default;
+  transform: translateY(-50%) !important;
+  filter: grayscale(0.2);
+  transition: none;
+}
+
+
+.nav[disabled]:hover {
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, .3);
 }
 
 .quote {
