@@ -154,6 +154,44 @@
 .prev { left: -60px }
 .next { right: -60px }
 
+.image-container {
+  position: absolute;
+  left: -35vw;
+  bottom: -45vh;
+  width: 55vh;   
+  height: auto;
+  z-index: 0;
+  overflow: visible;
+  animation: floatY 9s ease-in-out infinite;
+}
+
+.moon-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  animation: floatX 15s ease-in-out infinite;
+}
+
+@keyframes floatY {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -40px, 0);
+  }
+}
+
+@keyframes floatX {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(40px, 0, 0);
+  }
+}
+
 @media (hover: none) and (pointer: coarse) {
   .nav:active { transform: translateY(-50%) scale(0.96); }
 }
@@ -270,6 +308,13 @@
 
   .prev { left: 8px }
   .next { right: 8px }
+
+  .image-container {
+    bottom: -30vh;
+    left: -48vw;
+    width: 40vh;
+    z-index: -1;
+  }
 }
 
 @media (min-height: 1440px) {
