@@ -44,6 +44,21 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
       author: 'Rafael Costa',
       role: 'Empresário',
     },
+    {
+      quote: 'Achei que fosse sentir medo, mas foi o oposto. A serenidade do espaço e o silêncio absoluto me fizeram repensar a vida. Tudo lá em cima é pura harmonia.',
+      author: 'Patrícia Mendes',
+      role: 'Professora de Física',
+    },
+    {
+      quote: 'Foi tudo extremamente bem organizado. As palestras sobre astronomia durante a viagem tornaram tudo ainda mais fascinante. Um verdadeiro turismo educativo.',
+      author: 'Eduardo Pereira',
+      role: 'Astrônomo Amador',
+    },
+    {
+      quote: 'A viagem foi perfeita do início ao fim. A gastronomia, o entretenimento e o conforto superaram qualquer resort de luxo na Terra. Simplesmente espetacular.',
+      author: 'Bruna Carvalho',
+      role: 'Chefe de Cozinha',
+    }
    ];
 
   testimonials: TestimonialVM[] = [];
