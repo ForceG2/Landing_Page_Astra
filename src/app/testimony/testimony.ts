@@ -5,7 +5,8 @@ import {
   ViewChild,
   AfterViewInit,
   HostListener,
-  OnInit
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 
 type BaseTestimonial = { quote: string; author: string; role: string };
@@ -18,11 +19,11 @@ type TestimonialVM = BaseTestimonial & { id: number };
   templateUrl: './testimony.html',
   styleUrl: './testimony.css',
 })
-export class Testimonials implements OnInit, AfterViewInit {
+export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('track', { static: true }) track!: ElementRef<HTMLDivElement>;
   @ViewChild('trackContainer', { static: true }) trackContainer!: ElementRef<HTMLDivElement>;
 
-  private readonly originalTestimonials: BaseTestimonial[] = [
+  private readonly originalTestimonials: BaseTestimonial[] = [ 
     {
       quote: 'Sempre sonhei em ver a Terra do espaço, mas o cruzeiro superou qualquer expectativa. As cabines eram super confortáveis, a comida incrível e, à noite, observar as estrelas pela janela parecia coisa de filme. Voltarei com certeza!',
       author: 'Ana Beatriz',
@@ -43,15 +44,16 @@ export class Testimonials implements OnInit, AfterViewInit {
       author: 'Rafael Costa',
       role: 'Empresário',
     },
-  ];
+   ];
 
   testimonials: TestimonialVM[] = [];
   private nextId = 1;
   private cardWidth = 0;
   private currentIndex = 0;
+  private boundOnScroll = this.onScroll.bind(this);
+  private rafHandle: number | null = null;
 
   ngOnInit(): void {
-    // NÃO repetimos mais — apenas os originais
     this.testimonials = this.originalTestimonials.map(t => ({ ...t, id: this.nextId++ }));
     this.currentIndex = 0;
   }
@@ -59,6 +61,16 @@ export class Testimonials implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.updateCardWidth();
     requestAnimationFrame(() => this.scrollToIndex(this.currentIndex, false));
+
+    this.track.nativeElement.addEventListener('scroll', this.boundOnScroll, { passive: true });
+  }
+
+  ngOnDestroy(): void {
+    this.track?.nativeElement?.removeEventListener('scroll', this.boundOnScroll);
+    if (this.rafHandle != null) {
+      cancelAnimationFrame(this.rafHandle);
+      this.rafHandle = null;
+    }
   }
 
   trackById(_index: number, item: TestimonialVM): number {
@@ -93,14 +105,16 @@ export class Testimonials implements OnInit, AfterViewInit {
 
   private scrollToIndex(index: number, smooth = true): void {
     const trackEl = this.track.nativeElement;
-    const containerEl = this.trackContainer.nativeElement;
     const scrollLeft = index * this.cardWidth;
-    if (smooth) {
-      trackEl.style.scrollBehavior = 'smooth';
-    } else {
-      trackEl.style.scrollBehavior = 'auto';
-    }
+
+    trackEl.style.scrollBehavior = smooth ? 'smooth' : 'auto';
     trackEl.scrollLeft = scrollLeft;
+
+    if (smooth) {
+      requestAnimationFrame(() => {
+        trackEl.style.scrollBehavior = 'auto';
+      });
+    }
   }
 
   private updateCardWidth(): void {
@@ -111,6 +125,26 @@ export class Testimonials implements OnInit, AfterViewInit {
       card.style.minWidth = `${this.cardWidth}px`;
       card.style.maxWidth = `${this.cardWidth}px`;
       card.style.width = `${this.cardWidth}px`;
+    });
+  }
+
+  private onScroll(): void {
+    if (this.rafHandle != null) return; // já agendado
+    this.rafHandle = requestAnimationFrame(() => {
+      this.rafHandle = null;
+      const trackEl = this.track.nativeElement;
+
+      if (!this.cardWidth) return;
+
+      const rawIndex = trackEl.scrollLeft / this.cardWidth;
+      const newIndex = Math.min(
+        Math.max(0, Math.round(rawIndex)),
+        Math.max(0, this.testimonials.length - 1)
+      );
+
+      if (newIndex !== this.currentIndex) {
+        this.currentIndex = newIndex;
+      }
     });
   }
 }
