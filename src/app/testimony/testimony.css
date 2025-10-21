@@ -313,8 +313,8 @@
     bottom: 8px;
   }
 
-  .prev { left: 8px }
-  .next { right: 8px }
+  .prev { left: 20px }
+  .next { right: 20px }
 
   .image-container {
     bottom: -30vh;
