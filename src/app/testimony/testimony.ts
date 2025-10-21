@@ -144,7 +144,7 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onScroll(): void {
-    if (this.rafHandle != null) return; // já agendado
+    if (this.rafHandle != null) return;
     this.rafHandle = requestAnimationFrame(() => {
       this.rafHandle = null;
       const trackEl = this.track.nativeElement;
@@ -154,12 +154,10 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
       const rawIndex = trackEl.scrollLeft / this.cardWidth;
       const newIndex = Math.min(
         Math.max(0, Math.round(rawIndex)),
-        Math.max(0, this.testimonials.length - 1)
+        this.testimonials.length - 1
       );
 
-      if (newIndex !== this.currentIndex) {
-        this.currentIndex = newIndex;
-      }
+      this.currentIndex = newIndex;
     });
   }
 }
