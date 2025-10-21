@@ -249,6 +249,13 @@
 
   .prev { left: -50px }
   .next { right: -50px }
+
+  .image-container {
+    bottom: -30vh;
+    left: -48vw;
+    width: 40vh;
+    z-index: -1;
+  }
 }
 
 @media (max-width: 768px) {
