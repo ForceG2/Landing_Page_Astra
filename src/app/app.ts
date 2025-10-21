@@ -11,6 +11,11 @@ import { Testimonials } from './testimony/testimony';
 @Component({
   selector: 'app-root',
   imports: [Background, Hero, About, Attractions, Faq, Footer, Trajectory, Testimonials],
+import { Header } from './header/header';
+
+@Component({
+  selector: 'app-root',
+  imports: [Background, Header, Hero, About, Attractions, Faq, Footer, Trajectory],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
