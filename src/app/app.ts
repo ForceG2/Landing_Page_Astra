@@ -7,15 +7,11 @@ import { Hero } from './hero/hero';
 import { Footer } from './footer/footer';
 import { Trajectory } from './trajectory/trajectory';
 import { Testimonials } from './testimony/testimony';
-
-@Component({
-  selector: 'app-root',
-  imports: [Background, Hero, About, Attractions, Faq, Footer, Trajectory, Testimonials],
 import { Header } from './header/header';
 
 @Component({
   selector: 'app-root',
-  imports: [Background, Header, Hero, About, Attractions, Faq, Footer, Trajectory],
+  imports: [Background, Header, Hero, About, Attractions, Faq, Footer, Trajectory, Testimonials],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
