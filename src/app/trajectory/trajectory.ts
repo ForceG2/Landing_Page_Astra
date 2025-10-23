@@ -50,7 +50,8 @@ export class Trajectory implements AfterViewInit {
       const destinoRect = destino.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
 
-      const distanciaSegura = 50;
+      const isMobile = window.innerWidth <= 767;
+      const distanciaSegura = isMobile ? 30 : 50;
 
       const targetX = destinoRect.left - containerRect.left - distanciaSegura + 20;
       const targetY =
