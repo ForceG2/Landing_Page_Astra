@@ -22,7 +22,7 @@
         [class.open]="openIndex === i"
         [style.maxHeight]="openIndex === i ? answerHeights[i] + 'px' : '0px'"
         [attr.aria-hidden]="openIndex === i ? 'false' : 'true'">
-        <p>{{ faq.a }}</p>
+        <p>{{ isMobile ? faq.a.short : faq.a.long }}</p>
       </div>
     </div>
   </div>
