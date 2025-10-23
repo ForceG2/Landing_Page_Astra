@@ -78,7 +78,7 @@ export class Faq implements AfterViewInit {
   }
 
   checkScreenWidth(): void {
-    this.isMobile = window.innerWidth <= 768; // breakpoint para mobile
+    this.isMobile = window.innerWidth <= 768; 
     if (this.openIndex !== null) {
       setTimeout(() => this.calculateHeights(), 60);
     }
@@ -86,17 +86,13 @@ export class Faq implements AfterViewInit {
 
   calculateHeights(): void {
     this.answerHeights = this.answers.map(a => {
-      // retorna scrollHeight para cada div de resposta
       return a.nativeElement.scrollHeight;
     });
   }
 
   toggle(index: number): void {
     this.openIndex = this.openIndex === index ? null : index;
-
-    // se a altura de algum conteúdo pode mudar, recalcule logo após abrir
     if (this.openIndex !== null) {
-      // espera o browser renderizar o conteúdo aberto e então atualiza a altura
       setTimeout(() => this.calculateHeights(), 60);
     }
   }
