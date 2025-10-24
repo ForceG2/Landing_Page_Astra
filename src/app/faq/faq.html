@@ -16,8 +16,13 @@
         <span class="chevron">▾</span>
       </button>
       
-      <div class="faq-answer" [class.show]="openIndex === i">
-        <p>{{ faq.a }}</p>
+      <div
+        #answer
+        class="faq-answer"
+        [class.open]="openIndex === i"
+        [style.maxHeight]="openIndex === i ? answerHeights[i] + 'px' : '0px'"
+        [attr.aria-hidden]="openIndex === i ? 'false' : 'true'">
+        <p>{{ isMobile ? faq.a.short : faq.a.long }}</p>
       </div>
     </div>
   </div>
