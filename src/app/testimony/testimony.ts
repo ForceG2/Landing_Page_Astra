@@ -65,12 +65,24 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
   private nextId = 1;
   private cardWidth = 0;
   private currentIndex = 0;
+  private readonly originalLength: number;
   private boundOnScroll = this.onScroll.bind(this);
   private rafHandle: number | null = null;
+  private isTransitioning = false;
+  private scrollTimeout: any = null;
+
+  constructor() {
+    this.originalLength = this.originalTestimonials.length;
+  }
 
   ngOnInit(): void {
-    this.testimonials = this.originalTestimonials.map(t => ({ ...t, id: this.nextId++ }));
-    this.currentIndex = 0;
+    const tripled = [
+      ...this.originalTestimonials,
+      ...this.originalTestimonials,
+      ...this.originalTestimonials
+    ];
+    this.testimonials = tripled.map(t => ({ ...t, id: this.nextId++ }));
+    this.currentIndex = this.originalLength;
   }
 
   ngAfterViewInit(): void {
@@ -86,6 +98,9 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
       cancelAnimationFrame(this.rafHandle);
       this.rafHandle = null;
     }
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
   }
 
   trackById(_index: number, item: TestimonialVM): number {
@@ -99,36 +114,58 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
   }
 
   get canPrev(): boolean {
-    return this.currentIndex > 0;
+    return true; 
   }
 
   get canNext(): boolean {
-    return this.currentIndex < this.testimonials.length - 1;
+    return true; 
   }
 
   navigatePrev(): void {
-    if (!this.canPrev) return;
-    this.currentIndex = Math.max(0, this.currentIndex - 1);
+    if (this.isTransitioning) return;
+    
+    this.currentIndex--;
+    
+    if (this.currentIndex < 0) {
+      this.currentIndex = this.originalLength * 2 - 1;
+    }
+    
     this.scrollToIndex(this.currentIndex, true);
   }
 
   navigateNext(): void {
-    if (!this.canNext) return;
-    this.currentIndex = Math.min(this.testimonials.length - 1, this.currentIndex + 1);
+    if (this.isTransitioning) return;
+    
+    this.currentIndex++;
+    
+    if (this.currentIndex >= this.originalLength * 3) {
+      this.currentIndex = this.originalLength;
+    }
+    
     this.scrollToIndex(this.currentIndex, true);
   }
 
   private scrollToIndex(index: number, smooth = true): void {
     const trackEl = this.track.nativeElement;
-    const scrollLeft = index * this.cardWidth;
+    
+    const safeIndex = Math.max(0, Math.min(index, this.testimonials.length - 1));
+    const scrollLeft = safeIndex * this.cardWidth;
+
+    if (smooth) {
+      this.isTransitioning = true;
+    }
 
     trackEl.style.scrollBehavior = smooth ? 'smooth' : 'auto';
     trackEl.scrollLeft = scrollLeft;
 
     if (smooth) {
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         trackEl.style.scrollBehavior = 'auto';
-      });
+        this.isTransitioning = false;
+        this.checkAndReposition();
+      }, 300);
+    } else {
+      this.isTransitioning = false;
     }
   }
 
@@ -145,6 +182,7 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
 
   private onScroll(): void {
     if (this.rafHandle != null) return;
+    
     this.rafHandle = requestAnimationFrame(() => {
       this.rafHandle = null;
       const trackEl = this.track.nativeElement;
@@ -152,12 +190,35 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
       if (!this.cardWidth) return;
 
       const rawIndex = trackEl.scrollLeft / this.cardWidth;
-      const newIndex = Math.min(
-        Math.max(0, Math.round(rawIndex)),
-        this.testimonials.length - 1
-      );
+      let newIndex = Math.round(rawIndex);
+      
+      newIndex = Math.max(0, Math.min(newIndex, this.testimonials.length - 1));
 
       this.currentIndex = newIndex;
+
+      if (this.scrollTimeout) {
+        clearTimeout(this.scrollTimeout);
+      }
+
+      this.scrollTimeout = setTimeout(() => {
+        if (!this.isTransitioning) {
+          this.checkAndReposition();
+        }
+      }, 150);
     });
+  }
+
+  private checkAndReposition(): void {
+    if (this.isTransitioning) return;
+
+    if (this.currentIndex >= this.originalLength * 2) {
+      this.currentIndex = this.currentIndex - this.originalLength;
+      this.scrollToIndex(this.currentIndex, false);
+    } 
+
+    else if (this.currentIndex < this.originalLength) {
+      this.currentIndex = this.currentIndex + this.originalLength;
+      this.scrollToIndex(this.currentIndex, false);
+    }
   }
 }
