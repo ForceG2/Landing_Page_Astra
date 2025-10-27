@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box }
 
 .testimonials-container {
-  padding-bottom: 80px
+  padding-bottom: 90px
 }
 
 .testimonials {
