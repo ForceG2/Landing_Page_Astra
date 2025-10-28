@@ -212,6 +212,30 @@
   .label {
     font-size: 18px;
   }
+
+    .popup-content {
+    width: 50%;
+    padding: 15px 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 200, 255, 0.3);
+  }
+
+  .popup-content h3 {
+    font-size: 28px;
+    margin-top: 3px;
+    margin-bottom: 8px;
+  }
+
+  .popup-content p {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  #close-popup {
+    padding: 6px 12px;
+    font-size: 20px;
+    border-radius: 5px;
+  }
 }
 
 @media screen and (max-width: 767px) {
@@ -264,6 +288,26 @@
   }
   
   .popup-content {
-    width: 60%; 
+    width: 60%;
+    padding: 15px 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 200, 255, 0.3);
+  }
+
+  .popup-content h3 {
+    font-size: 19px;
+    margin-top: 3px;
+    margin-bottom: 8px;
+  }
+
+  .popup-content p {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  #close-popup {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 5px;
   }
 }
