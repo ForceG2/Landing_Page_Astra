@@ -154,6 +154,39 @@
 .prev { left: -60px }
 .next { right: -60px }
 
+.dots-container {
+  display: none;
+  text-align: center;
+  padding-top: 24px; 
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #888;
+  border: none;
+  padding: 0;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
+}
+
+.dot:hover {
+  transform: scale(1.2);
+}
+
+.dot.active {
+  background-color: #0096FF;
+}
+
+.dot:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0096FF;
+}
+
+
 .image-container {
   position: absolute;
   left: -35vw;
@@ -267,6 +300,7 @@
 
   .carousel {
     max-width: 100%;
+    margin-bottom: 32px; 
   }
 
   .testimonials-container .title {
@@ -306,15 +340,12 @@
   }
 
   .nav { 
-    width: 36px; 
-    height: 36px; 
-    font-size: 14px;
-    top: auto;
-    bottom: 8px;
+    display: none;
   }
-
-  .prev { left: 20px }
-  .next { right: 20px }
+  
+  .dots-container {
+    display: block;
+  }
 
   .image-container {
     bottom: -30vh;
