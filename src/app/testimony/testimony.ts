@@ -62,7 +62,7 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
    ];
 
   testimonials: TestimonialVM[] = [];
-  public dots: any[] = []; 
+  public dots: any[] = [];
   private nextId = 1;
   private cardWidth = 0;
   private currentIndex = 0;
@@ -132,10 +132,7 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
     
     this.currentIndex--;
     
-    if (this.currentIndex < 0) {
-      this.currentIndex = this.originalLength * 2 - 1;
-    }
-    
+
     this.scrollToIndex(this.currentIndex, true);
   }
 
@@ -144,9 +141,6 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
     
     this.currentIndex++;
     
-    if (this.currentIndex >= this.originalLength * 3) {
-      this.currentIndex = this.originalLength;
-    }
     
     this.scrollToIndex(this.currentIndex, true);
   }
@@ -174,14 +168,8 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
 
     trackEl.style.scrollBehavior = smooth ? 'smooth' : 'auto';
     trackEl.scrollLeft = scrollLeft;
-
-    if (smooth) {
-      setTimeout(() => {
-        trackEl.style.scrollBehavior = 'auto';
-        this.isTransitioning = false;
-        this.checkAndReposition();
-      }, 300);
-    } else {
+    
+    if (!smooth) {
       this.isTransitioning = false;
     }
   }
@@ -207,35 +195,45 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
       if (!this.cardWidth) return;
 
       const rawIndex = trackEl.scrollLeft / this.cardWidth;
-      let newIndex = Math.round(rawIndex);
+      let newIndex = Math.round(rawIndex); 
       
       newIndex = Math.max(0, Math.min(newIndex, this.testimonials.length - 1));
 
-      this.currentIndex = newIndex;
+      if (newIndex !== this.currentIndex) {
+        this.currentIndex = newIndex;
+      }
 
       if (this.scrollTimeout) {
         clearTimeout(this.scrollTimeout);
       }
 
       this.scrollTimeout = setTimeout(() => {
-        if (!this.isTransitioning) {
-          this.checkAndReposition();
+
+        if (this.isTransitioning) {
+          this.isTransitioning = false;
         }
+        this.checkAndReposition();
       }, 150);
     });
   }
 
   private checkAndReposition(): void {
-    if (this.isTransitioning) return;
+
+    let needsReposition = false;
+    let newIndex = this.currentIndex;
 
     if (this.currentIndex >= this.originalLength * 2) {
-      this.currentIndex = this.currentIndex - this.originalLength;
-      this.scrollToIndex(this.currentIndex, false);
+      newIndex = this.currentIndex - this.originalLength; 
+      needsReposition = true;
     } 
-
     else if (this.currentIndex < this.originalLength) {
-      this.currentIndex = this.currentIndex + this.originalLength;
-      this.scrollToIndex(this.currentIndex, false);
+      newIndex = this.currentIndex + this.originalLength; 
+      needsReposition = true;
+    }
+
+    if (needsReposition) {
+      this.currentIndex = newIndex;
+      this.scrollToIndex(this.currentIndex, false); 
     }
   }
 }
