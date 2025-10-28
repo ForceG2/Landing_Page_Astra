@@ -34,6 +34,18 @@
       </div>
     </div>
 
+    <div class="dots-container" role="tablist">
+      <button
+        *ngFor="let _ of dots; let i = index"
+        class="dot"
+        role="tab"
+        [class.active]="i === activeDotIndex"
+        [attr.aria-selected]="i === activeDotIndex"
+        [attr.aria-label]="'Ir para depoimento ' + (i + 1)"
+        (click)="goToSlide(i)"
+      >
+      </button>
+    </div>
     <button
       class="nav next"
       type="button"

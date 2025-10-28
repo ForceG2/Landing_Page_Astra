@@ -62,10 +62,11 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
    ];
 
   testimonials: TestimonialVM[] = [];
+  public dots: any[] = []; 
   private nextId = 1;
   private cardWidth = 0;
   private currentIndex = 0;
-  private readonly originalLength: number;
+  public readonly originalLength: number;
   private boundOnScroll = this.onScroll.bind(this);
   private rafHandle: number | null = null;
   private isTransitioning = false;
@@ -82,6 +83,7 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
       ...this.originalTestimonials
     ];
     this.testimonials = tripled.map(t => ({ ...t, id: this.nextId++ }));
+    this.dots = new Array(this.originalLength);
     this.currentIndex = this.originalLength;
   }
 
@@ -113,6 +115,10 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
     this.scrollToIndex(this.currentIndex, false);
   }
 
+  get activeDotIndex(): number {
+    return this.currentIndex % this.originalLength;
+  }
+
   get canPrev(): boolean {
     return true; 
   }
@@ -142,6 +148,17 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
       this.currentIndex = this.originalLength;
     }
     
+    this.scrollToIndex(this.currentIndex, true);
+  }
+
+  goToSlide(index: number): void {
+    if (this.isTransitioning) return;
+    
+    const newIndex = this.originalLength + index;
+    
+    if (newIndex === this.currentIndex) return; 
+
+    this.currentIndex = newIndex;
     this.scrollToIndex(this.currentIndex, true);
   }
 
