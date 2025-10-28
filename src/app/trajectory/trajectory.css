@@ -262,4 +262,8 @@
   .label {
     font-size: 10px;
   }
+  
+  .popup-content {
+    width: 60%; 
+  }
 }
