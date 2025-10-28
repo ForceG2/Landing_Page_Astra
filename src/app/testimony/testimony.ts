@@ -69,7 +69,7 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
   public readonly originalLength: number;
   private boundOnScroll = this.onScroll.bind(this);
   private rafHandle: number | null = null;
-  private isTransitioning = false;
+  public isTransitioning = false;
   private scrollTimeout: any = null;
 
   constructor() {

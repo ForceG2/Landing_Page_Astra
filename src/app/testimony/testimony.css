@@ -186,6 +186,19 @@
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0096FF;
 }
 
+.dot[disabled] {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.dot[disabled]:hover {
+  transform: none;
+  background-color: #888; 
+}
+
+.dot.active[disabled]:hover {
+   background-color: #0096FF;
+}
 
 .image-container {
   position: absolute;

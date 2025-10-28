@@ -7,8 +7,8 @@
       type="button"
       aria-label="Anterior"
       (click)="navigatePrev()"
-      [disabled]="!canPrev"
-      [attr.aria-disabled]="!canPrev"
+      [disabled]="!canPrev || isTransitioning"
+      [attr.aria-disabled]="!canPrev || isTransitioning"
     >
       &#10094;
     </button>
@@ -34,6 +34,7 @@
       </div>
     </div>
 
+
     <div class="dots-container" role="tablist">
       <button
         *ngFor="let _ of dots; let i = index"
@@ -43,16 +44,18 @@
         [attr.aria-selected]="i === activeDotIndex"
         [attr.aria-label]="'Ir para depoimento ' + (i + 1)"
         (click)="goToSlide(i)"
+        [disabled]="isTransitioning"
       >
       </button>
     </div>
+
     <button
       class="nav next"
       type="button"
       aria-label="Próximo"
       (click)="navigateNext()"
-      [disabled]="!canNext"
-      [attr.aria-disabled]="!canNext"
+      [disabled]="!canNext || isTransitioning"
+      [attr.aria-disabled]="!canNext || isTransitioning"
     >
       &#10095;
     </button>
