@@ -96,17 +96,7 @@
   font-style: italic;
   margin: 0;
   position: relative;
-  padding-left: 24px;
-}
-
-.quote-text::before {
-  content: '"';
-  font-size: 4.5rem;
-  color: rgba(0, 150, 255, 0.4);
-  position: absolute;
-  left: -20px;
-  top: -25px;
-  font-family: Georgia, serif;
+  text-align: center
 }
 
 .author-info {
