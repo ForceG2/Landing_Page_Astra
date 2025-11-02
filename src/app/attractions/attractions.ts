@@ -19,7 +19,7 @@ export class Attractions implements OnInit, AfterViewInit {
   private readonly SCROLL_THRESHOLD_FACTOR = 1.5;
   private readonly HOLD_SCROLL_SPEED = 700;
   private readonly CARDS_TO_SCROLL = 3;
-  private readonly HOLD_ACTIVATION_DELAY = 180; 
+  private readonly HOLD_ACTIVATION_DELAY = 180;
   private holdTimerId: number | null = null;
 
   private readonly originalCards: BaseCard[] = [
@@ -58,13 +58,15 @@ export class Attractions implements OnInit, AfterViewInit {
   // estado do componente
   cards: CardVM[] = [];
   private cardWidth = 372;
-  private isAdjustingTrack = false;
   private nextId = 1;
   private currentlyFlippedCardId: number | null = null;
   private autoScrollRafId: number | null = null;
   private autoScrollDirection: 'left' | 'right' | null = null;
   private lastFrameTimestamp = 0;
   private pointerDownTime = 0;
+
+  // controle de loop/teleporte
+  private isTeleporting = false;
 
   ngOnInit(): void {
     const repeatedCards: CardVM[] = [];
@@ -76,7 +78,6 @@ export class Attractions implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.updateCardWidth();
-    // posiciona o scroll no meio para dar a ilusão de infinito em ambas as direções
     requestAnimationFrame(() => {
       const el = this.track.nativeElement;
       el.scrollLeft = this.getScrollThreshold();
@@ -104,12 +105,10 @@ export class Attractions implements OnInit, AfterViewInit {
     // se o card já estiver em animação, não faz nada
     if (cardToToggle.animating) return;
 
-    // desvira o card que estava virado anteriormente (se houver um e não for o mesmo)
+    // desvira o card que estava virado anteriormente (se houver um e não for o mesmo)    
     if (this.currentlyFlippedCardId && this.currentlyFlippedCardId !== cardToToggle.id) {
-      const previouslyFlippedCard = this.cards.find(c => c.id === this.currentlyFlippedCardId);
-      if (previouslyFlippedCard) {
-        this.setCardFlipState(previouslyFlippedCard, false);
-      }
+      const prev = this.cards.find(c => c.id === this.currentlyFlippedCardId);
+      if (prev) this.setCardFlipState(prev, false);
     }
 
     // vira ou desvira o card atual
@@ -123,124 +122,98 @@ export class Attractions implements OnInit, AfterViewInit {
     setTimeout(() => (card.animating = false), this.FLIP_ANIMATION_DURATION);
   }
 
-  // lógica de scroll - (clique rápido = 3 cards, hold = contínuo)
-  startAutoScroll(direction: 'left' | 'right'): void {
-  if (this.isAdjustingTrack) return;
-
-  this.pointerDownTime = Date.now();
-  this.autoScrollDirection = direction;
-  this.lastFrameTimestamp = 0;
-
-  // cancela qualquer rAF/timer pendente
-  if (this.autoScrollRafId) cancelAnimationFrame(this.autoScrollRafId);
-  if (this.holdTimerId) { clearTimeout(this.holdTimerId); this.holdTimerId = null; }
-
-  // evita o "mini movimento" inicial
-  this.holdTimerId = window.setTimeout(() => {
-    this.holdTimerId = null;
-    this.track.nativeElement.style.scrollBehavior = 'auto';
-    this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
-  }, this.HOLD_ACTIVATION_DELAY);
-}
-
-stopAutoScroll(): void {
-  const holdDuration = Date.now() - this.pointerDownTime;
-  const wasQuickClick = holdDuration < this.HOLD_ACTIVATION_DELAY;
-
-  // cancela rAF/timer se existirem
-  if (this.holdTimerId) { clearTimeout(this.holdTimerId); this.holdTimerId = null; }
-  if (this.autoScrollRafId) { cancelAnimationFrame(this.autoScrollRafId); this.autoScrollRafId = null; }
-
-  // se foi um clique rápido, faz o scroll de 3 cards
-  if (wasQuickClick && this.autoScrollDirection) {
-    const direction = this.autoScrollDirection === 'left' ? -1 : 1;
-    // suave
-    this.track.nativeElement.style.scrollBehavior = 'smooth';
-    this.scrollByAmount(direction * this.cardWidth * this.CARDS_TO_SCROLL, true);
-  } else {
-    // se estava em hold, volta o comportamento padrão suave
-    this.track.nativeElement.style.scrollBehavior = 'smooth';
+  // scroll
+  onTrackScroll(): void {
+    this.ensureLoop(this.track.nativeElement);
   }
 
-  this.autoScrollDirection = null;
-}
+  // auto-scroll via hold (mouse ou toque)
+  startAutoScroll(direction: 'left' | 'right'): void {
+    this.pointerDownTime = Date.now();
+    this.autoScrollDirection = direction;
+    this.lastFrameTimestamp = 0;
 
-private autoScrollStep = (timestamp: number): void => {
-  if (!this.autoScrollDirection) return;
+    if (this.autoScrollRafId) cancelAnimationFrame(this.autoScrollRafId);
+    if (this.holdTimerId) { clearTimeout(this.holdTimerId); this.holdTimerId = null; }
 
-  if (!this.lastFrameTimestamp) this.lastFrameTimestamp = timestamp;
-  const deltaTime = Math.min((timestamp - this.lastFrameTimestamp) / 1000, 0.05);
-  this.lastFrameTimestamp = timestamp;
+    // delay para diferenciar clique de hold
+    this.holdTimerId = window.setTimeout(() => {
+      this.holdTimerId = null;
+      this.track.nativeElement.style.scrollBehavior = 'auto';
+      this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
+    }, this.HOLD_ACTIVATION_DELAY);
+  }
 
-  const scrollAmount = this.HOLD_SCROLL_SPEED * deltaTime;
-  const directionMultiplier = this.autoScrollDirection === 'left' ? -1 : 1;
+  stopAutoScroll(): void {
+    const holdDuration = Date.now() - this.pointerDownTime;
+    const wasQuickClick = holdDuration < this.HOLD_ACTIVATION_DELAY;
 
-  this.scrollByAmountDirect(scrollAmount * directionMultiplier);
+    if (this.holdTimerId) { clearTimeout(this.holdTimerId); this.holdTimerId = null; }
+    if (this.autoScrollRafId) { cancelAnimationFrame(this.autoScrollRafId); this.autoScrollRafId = null; }
 
-  this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
-};
-  
-  // lógica carrossel infinito
-  private scrollByAmount(amount: number, smooth = true): void {
-    if (this.isAdjustingTrack) return;
-    
-    if (amount > 0 && this.isNearEnd()) {
-      this.appendCards();
-    } else if (amount < 0 && this.isNearStart()) {
-      this.prependCards();
+    const el = this.track.nativeElement;
+
+    if (wasQuickClick && this.autoScrollDirection) {
+      const direction = this.autoScrollDirection === 'left' ? -1 : 1;
+      el.style.scrollBehavior = 'smooth';
+      this.scrollByAmount(direction * this.cardWidth * this.CARDS_TO_SCROLL, true);
     } else {
-      this.track.nativeElement.scrollBy({ left: amount, behavior: smooth ? 'smooth' : 'auto' });
+      el.style.scrollBehavior = 'smooth';
     }
+
+    this.autoScrollDirection = null;
+  }
+
+  private autoScrollStep = (timestamp: number): void => {
+    if (!this.autoScrollDirection) return;
+
+    if (!this.lastFrameTimestamp) this.lastFrameTimestamp = timestamp;
+    const deltaTime = Math.min((timestamp - this.lastFrameTimestamp) / 1000, 0.05);
+    this.lastFrameTimestamp = timestamp;
+
+    const scrollAmount = this.HOLD_SCROLL_SPEED * deltaTime;
+    const dir = this.autoScrollDirection === 'left' ? -1 : 1;
+
+    this.scrollByAmountDirect(scrollAmount * dir);
+    this.ensureLoop(this.track.nativeElement);
+
+    this.autoScrollRafId = requestAnimationFrame(this.autoScrollStep);
+  };
+
+  private scrollByAmount(amount: number, smooth = true): void {
+    const el = this.track.nativeElement;
+    el.scrollBy({ left: amount, behavior: smooth ? 'smooth' : 'auto' });
+    requestAnimationFrame(() => this.ensureLoop(el));
   }
 
   private scrollByAmountDirect(amount: number): void {
-    if (this.isAdjustingTrack) return;
-    
     const el = this.track.nativeElement;
-    
-    if (amount > 0 && this.isNearEnd()) {
-      this.appendCards();
-      el.scrollBy({ left: amount, behavior: 'auto' });
-    } else if (amount < 0 && this.isNearStart()) {
-      const currentScroll = el.scrollLeft;
-      this.prependCards();
-      requestAnimationFrame(() => {
-        el.scrollLeft = currentScroll + this.getOriginalBlockWidth() + amount;
-      });
-    } else {
-      el.scrollBy({ left: amount, behavior: 'auto' });
+    el.scrollBy({ left: amount, behavior: 'auto' });
+    this.ensureLoop(el);
+  }
+
+  // loop infinito
+  private ensureLoop(el: HTMLElement): void {
+    if (this.isTeleporting) return;
+
+    const threshold = this.getScrollThreshold();
+    const block = this.getOriginalBlockWidth();
+    const max = el.scrollWidth - el.clientWidth;
+
+    if (el.scrollLeft < threshold) {
+      this.teleport(el, +block);
+    } else if (el.scrollLeft > max - threshold) {
+      this.teleport(el, -block);
     }
   }
 
-  private prependCards(): void {
-    if (this.isAdjustingTrack) return;
-    this.isAdjustingTrack = true;
-    
-    const el = this.track.nativeElement;
-    const currentScroll = el.scrollLeft;
-    
-    // adiciona novos cards no início do array
-    this.cards = [...this.createCardBlock(), ...this.cards];
-
-    // espera o DOM atualizar e ajusta a posição do scroll p que não se perceba a adição de novos elementos
-    requestAnimationFrame(() => {
-      el.scrollLeft = currentScroll + this.getOriginalBlockWidth();
-      this.isAdjustingTrack = false;
-    });
-  }
-
-  private appendCards(): void {
-    if (this.isAdjustingTrack) return;
-    this.isAdjustingTrack = true;
-
-    // adiciona novos cards no fim do array
-    this.cards = [...this.cards, ...this.createCardBlock()];
-    
-    // apenas adiciona, não precisa ajustar o scroll
-    // o próximo `scrollBy` continuará de onde parou
-    requestAnimationFrame(() => {
-        this.isAdjustingTrack = false;
-    });
+  private teleport(el: HTMLElement, delta: number): void {
+    this.isTeleporting = true;
+    const prev = el.style.scrollBehavior;
+    el.style.scrollBehavior = 'auto';
+    el.scrollLeft += delta;
+    el.style.scrollBehavior = prev || '';
+    this.isTeleporting = false;
   }
 
   private createCardBlock(): CardVM[] {
@@ -260,13 +233,13 @@ private autoScrollStep = (timestamp: number): void => {
       this.cardWidth = cardEl.offsetWidth + gap;
     }
   }
-  
+
   private getScrollThreshold(): number {
     return this.getOriginalBlockWidth() * this.SCROLL_THRESHOLD_FACTOR;
   }
-  
+
   private getOriginalBlockWidth(): number {
-      return this.cardWidth * this.originalCards.length;
+    return this.cardWidth * this.originalCards.length;
   }
 
   private isNearStart(): boolean {
