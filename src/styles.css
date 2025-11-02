@@ -3,12 +3,17 @@ body {
 }
 
 .title {
+  font-size: 50px;
   color: #fdfdfd;
+  text-align: left;
+  margin-left: 50px;
 }
 .description {
   font-size: 26.3px;
   color: #ffffff;
   max-width: 650px;
+  text-align: left;
+  margin-left: 50px;
   line-height: 1.4;
   margin-bottom: 20px;
 }
