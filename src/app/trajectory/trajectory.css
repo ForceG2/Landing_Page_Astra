@@ -244,8 +244,7 @@
   .trajectory-container {
     position: relative;
     padding-bottom: 60px;
-    height: 500px;
-    margin-bottom: -160px;
+    height: 340px;
   }
 
   .trajectory-container .title {
@@ -264,27 +263,27 @@
 
   .earth {
     width: 100px;
-    top: 42%;
+    top: 60%;
     left: 10%;
   }
   .moon {
     width: 70px;
-    top: 30%;
+    top: 43%;
     left: 36%;
   }
   .space_station {
     width: 68px;
-    top: 53%;
+    top: 80%;
     left: 53%;
   }
   .mars {
     width: 120px;
-    top: 29%;
+    top: 45%;
     left: 66%;
   }
   .rocket {
     width: 25px;
-    top: 30%;
+    top: 45%;
     left: 10%;
   }
 
