@@ -23,39 +23,39 @@ export class Testimonials implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('track', { static: true }) track!: ElementRef<HTMLDivElement>;
   @ViewChild('trackContainer', { static: true }) trackContainer!: ElementRef<HTMLDivElement>;
 
-  private readonly originalTestimonials: BaseTestimonial[] = [ 
+  private readonly originalTestimonials: BaseTestimonial[] = [
     {
-      quote: 'Sempre sonhei em ver a Terra do espaço, mas o cruzeiro superou qualquer expectativa. As cabines eram super confortáveis, a comida incrível e, à noite, observar as estrelas pela janela parecia coisa de filme. Voltarei com certeza!',
+      quote: '"Sempre sonhei em ver a Terra do espaço, mas o cruzeiro superou qualquer expectativa. As cabines eram super confortáveis, a comida incrível e, à noite, observar as estrelas pela janela parecia coisa de filme. Voltarei com certeza!"',
       author: 'Ana Beatriz',
       role: 'Engenheira Aeroespacial',
     },
     {
-      quote: 'A experiência foi literalmente de outro mundo! Cada detalhe foi pensado para proporcionar conforto e magia. Ver a Terra do espaço enquanto aproveitava shows ao vivo e gastronomia de primeira foi inesquecível.',
+      quote: '"A experiência foi literalmente de outro mundo! Cada detalhe foi pensado para proporcionar conforto e magia. Ver a Terra do espaço enquanto aproveitava shows ao vivo e gastronomia de primeira foi inesquecível."',
       author: 'Carlos Eduardo',
       role: 'Arquiteto',
     },
     {
-      quote: 'Nunca imaginei que seria possível viajar ao espaço com tanto conforto e segurança. A tripulação foi excepcional e as atividades a bordo surpreenderam a cada momento. Uma experiência que mudou minha perspectiva de vida.',
+      quote: '"Nunca imaginei que seria possível viajar ao espaço com tanto conforto e segurança. A tripulação foi excepcional e as atividades a bordo surpreenderam a cada momento. Uma experiência que mudou minha perspectiva de vida."',
       author: 'Marina Santos',
       role: 'Médica',
     },
     {
-      quote: 'O cruzeiro espacial superou todas as minhas expectativas! Desde o atendimento impecável até as vistas espetaculares do cosmos. A câmara de gravidade zero foi o ponto alto da viagem. Recomendo a todos que buscam uma aventura única.',
+      quote: '"O cruzeiro espacial superou todas as minhas expectativas! Desde o atendimento impecável até as vistas espetaculares do cosmos. A câmara de gravidade zero foi o ponto alto da viagem. Recomendo a todos que buscam uma aventura única."',
       author: 'Rafael Costa',
       role: 'Empresário',
     },
     {
-      quote: 'Achei que fosse sentir medo, mas foi o oposto. A serenidade do espaço e o silêncio absoluto me fizeram repensar a vida. Tudo lá em cima é pura harmonia.',
+      quote: '"Achei que fosse sentir medo, mas foi o oposto. A serenidade do espaço e o silêncio absoluto me fizeram repensar a vida. Tudo lá em cima é pura harmonia."',
       author: 'Patrícia Mendes',
       role: 'Professora de Física',
     },
     {
-      quote: 'Foi tudo extremamente bem organizado. As palestras sobre astronomia durante a viagem tornaram tudo ainda mais fascinante. Um verdadeiro turismo educativo.',
+      quote: '"Foi tudo extremamente bem organizado. As palestras sobre astronomia durante a viagem tornaram tudo ainda mais fascinante. Um verdadeiro turismo educativo."',
       author: 'Eduardo Pereira',
       role: 'Astrônomo Amador',
     },
     {
-      quote: 'A viagem foi perfeita do início ao fim. A gastronomia, o entretenimento e o conforto superaram qualquer resort de luxo na Terra. Simplesmente espetacular.',
+      quote: '"A viagem foi perfeita do início ao fim. A gastronomia, o entretenimento e o conforto superaram qualquer resort de luxo na Terra. Simplesmente espetacular."',
       author: 'Bruna Carvalho',
       role: 'Chefe de Cozinha',
     }
