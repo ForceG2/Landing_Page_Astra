@@ -12,13 +12,12 @@
   margin-top: 60px;
   text-align: center;
   margin-right: 50px;
-  font-size: 33.6px;
   margin-left: 0;;
 }
 
 .trajectory-subtitle {
   color: #ffffff;
-  font-size: 18px;
+  font-size: 26px;
   margin-top: -23px;
   text-align: center;
   margin-bottom: 20px;
@@ -38,7 +37,7 @@
 .label {
   position: absolute;
   color: white;
-  font-size: 14px;
+  font-size:18px;
   text-align: center;
   font-family: Arial, sans-serif;
   transform: translate(-50%, -50%);
@@ -181,29 +180,28 @@
   }
 
   .trajectory-container .title {
-    font-size: 2rem;
     margin-right: 0;
     margin-bottom: 35px;
     margin-left: 0;
   }
   .earth {
     width: 160px;
-    top: 45%;
+    top: 50%;
     left: 13%;
   }
   .moon {
     width: 110px;
-    top: 25%;
+    top: 32%;
     left: 36%;
   }
   .space_station {
     width: 130px;
-    top: 60%;
+    top: 73%;
     left: 53%;
   }
   .mars {
     width: 200px;
-    top: 35%;
+    top: 40%;
     left: 72%;
   }
   .rocket {
@@ -214,6 +212,7 @@
 
   .label {
     font-size: 18px;
+    position: absolute;
   }
 
   .popup-content {
@@ -250,14 +249,14 @@
   }
 
   .trajectory-container .title {
-    font-size: 20px;
+    font-size: 33px;
     margin-right: 0;
     margin-bottom: 35px;
     margin-left: 0;
   }
 
   .trajectory-container .trajectory-subtitle {
-    font-size: 13px;
+    font-size: 14px;
     margin-right: 0;
     margin-bottom: 50px;
     margin-left: 0;
@@ -265,17 +264,17 @@
 
   .earth {
     width: 100px;
-    top: 35%;
+    top: 42%;
     left: 10%;
   }
   .moon {
     width: 70px;
-    top: 25%;
+    top: 30%;
     left: 36%;
   }
   .space_station {
     width: 68px;
-    top: 48%;
+    top: 53%;
     left: 53%;
   }
   .mars {
@@ -290,7 +289,7 @@
   }
 
   .label {
-    font-size: 10px;
+    font-size: 12px;
   }
   
   .popup-content {
