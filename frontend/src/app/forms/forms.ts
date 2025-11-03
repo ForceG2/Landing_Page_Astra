@@ -65,7 +65,7 @@ export class Forms {
     if (!control.value) return null;
 
     const data = new Date(control.value);
-    const minData = new Date('1915-01-01');
+    const minData = new Date('1925-01-01');
     const maxData = new Date('2013-12-31');
 
     if (data < minData) return { minData: true };

@@ -49,6 +49,9 @@
         <span *ngIf="formData.get('dataNascimento')?.errors?.['maxData']"
           >Idade mínima de 12 anos.</span
         >
+        <span *ngIf="formData.get('dataNascimento')?.errors?.['minData']"
+          >Idade superior ao limite permitido.</span
+        >
       </span>
 
       <div class="checkbox-container">
