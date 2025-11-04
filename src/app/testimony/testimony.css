@@ -380,7 +380,7 @@
       transform: translate3d(0, 0, 0);
     }
     50% {
-      transform: translate3d(0, -14px, 0);
+      transform: translate3d(0, -9px, 0);
     }
   }
 
@@ -389,7 +389,7 @@
       transform: translate3d(0, 0, 0);
     }
     50% {
-      transform: translate3d(14px, 0, 0);
+      transform: translate3d(9px, 0, 0);
     }
   }
 }
