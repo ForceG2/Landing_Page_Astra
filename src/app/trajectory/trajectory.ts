@@ -184,7 +184,7 @@ export class Trajectory implements AfterViewInit {
           const containerRect = container.getBoundingClientRect();
           const offset = labelOffsets[planeta];
           const centerX = rect.left - containerRect.left + rect.width / 2 + offset.x;
-          const centerY = rect.top - containerRect.top - (labelEl.offsetHeight / 2) + offset.y - 5;
+          const centerY = rect.top - containerRect.top - labelEl.offsetHeight / 2 + offset.y - 5;
           labelEl.style.left = `${centerX}px`;
           labelEl.style.top = `${centerY}px`;
         }
