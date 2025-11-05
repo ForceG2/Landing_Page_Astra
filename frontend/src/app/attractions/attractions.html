@@ -1,21 +1,68 @@
-<section class="attractions">
-  <h2 class="title attractions-title">
+<section class="attractions-container">
+  <h2 class="title">
     Experiência única<br>nos cosmos
   </h2>
 
   <div class="carousel">
-    <button class="nav prev" type="button" aria-label="Anterior" (click)="scrollLeft()">&#10094;</button>
+    <button
+      class="nav prev"
+      type="button"
+      aria-label="Anterior"
+      (pointerdown)="startAutoScroll('left')"
+      (pointerup)="stopAutoScroll()"
+      (pointerleave)="stopAutoScroll()"
+      (pointercancel)="stopAutoScroll()"
+    >
+      &#10094;
+    </button>
 
     <div class="track-container">
       <div #track class="track" role="list">
-        <article class="card" role="listitem" *ngFor="let c of cards">
-          <div class="thumb">
-            <img [src]="c.image" [alt]="c.caption">
+        <article
+          class="card"
+          role="listitem"
+          *ngFor="let c of cards; trackBy: trackById"
+          (click)="toggleFlip(c)"
+          (keydown)="onCardKeydown($event, c)"
+          tabindex="0"
+          [attr.aria-pressed]="c.flipped"
+          [attr.aria-expanded]="c.flipped"
+          [class.is-flipped]="c.flipped"
+          [attr.aria-label]="c.caption + (c.flipped ? ' (virado)' : ' (toque para virar)')"
+        >
+          <div class="flip-inner">
+
+            <div class="face face-front">
+              <div class="thumb">
+                <img [src]="c.image" [alt]="c.caption" />
+                
+                <span class="tap-hint" aria-hidden="true">Toque para virar</span>
+              </div>
+              <p class="caption">{{ c.caption }}</p>
+            </div>
+
+            <div class="face face-back" aria-hidden="{{!c.flipped}}">
+              <div class="back-panel">
+                <h3 class="back-title">{{ c.caption }}</h3>
+                <p class="back-text">{{ c.details }}</p>
+                <span class="hint">Clique novamente para voltar</span>
+              </div>
+            </div>
           </div>
-          <p class="caption">{{ c.caption }}</p>
         </article>
       </div>
     </div>
-    <button class="nav next" type="button" aria-label="Próximo" (click)="scrollRight()">&#10095;</button>
+
+    <button
+      class="nav next"
+      type="button"
+      aria-label="Próximo"
+      (pointerdown)="startAutoScroll('right')"
+      (pointerup)="stopAutoScroll()"
+      (pointerleave)="stopAutoScroll()"
+      (pointercancel)="stopAutoScroll()"
+    >
+      &#10095;
+    </button>
   </div>
 </section>
