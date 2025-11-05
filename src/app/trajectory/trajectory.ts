@@ -50,7 +50,8 @@ export class Trajectory implements AfterViewInit {
       const destinoRect = destino.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
 
-      const distanciaSegura = 50;
+      const isMobile = window.innerWidth <= 767;
+      const distanciaSegura = isMobile ? 30 : 50;
 
       const targetX = destinoRect.left - containerRect.left - distanciaSegura + 20;
       const targetY =
@@ -162,8 +163,18 @@ export class Trajectory implements AfterViewInit {
     document.querySelector('.earth')?.addEventListener('click', () => {
       moverFoguete('.earth');
     });
+    const labelOffsets: Record<
+      'earth' | 'moon' | 'space_station' | 'mars',
+      { x: number; y: number }
+    > = {
+      earth: { x: 0, y: 5 },
+      moon: { x: 0, y: 0 },
+      space_station: { x: 0, y: 0 },
+      mars: { x: 0, y: 10 },
+    };
+
     const atualizarLabels = () => {
-      const planetas = ['earth', 'moon', 'space_station', 'mars'];
+      const planetas = ['earth', 'moon', 'space_station', 'mars'] as const;
 
       planetas.forEach((planeta) => {
         const planetaEl = document.querySelector(`.${planeta}`) as HTMLElement;
@@ -171,8 +182,9 @@ export class Trajectory implements AfterViewInit {
         if (planetaEl && labelEl) {
           const rect = planetaEl.getBoundingClientRect();
           const containerRect = container.getBoundingClientRect();
-          const centerX = rect.left - containerRect.left - 2 + rect.width / 2;
-          const centerY = rect.top - containerRect.top - 2; // 20px abaixo do planeta
+          const offset = labelOffsets[planeta];
+          const centerX = rect.left - containerRect.left + rect.width / 2 + offset.x;
+          const centerY = rect.top - containerRect.top - labelEl.offsetHeight / 2 + offset.y - 5;
           labelEl.style.left = `${centerX}px`;
           labelEl.style.top = `${centerY}px`;
         }
@@ -180,6 +192,7 @@ export class Trajectory implements AfterViewInit {
     };
 
     atualizarLabels();
+    setTimeout(atualizarLabels, 500);
     window.addEventListener('resize', atualizarLabels);
 
     closePopup?.addEventListener('click', () => {

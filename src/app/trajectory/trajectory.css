@@ -7,24 +7,26 @@
   flex-direction: column;
 }
 
-.trajectory-container .title{
-    color: #ffffff;
-    margin-top: 60px;
-    text-align: center;
-    margin-right: 50px;
+.trajectory-container .title {
+  color: #ffffff;
+  margin-top: 60px;
+  text-align: center;
+  margin-right: 50px;
+  margin-left: 0;
 }
 
-.trajectory-subtitle{
-    color: #ffffff;
-    font-size: 18px;
-    margin-top: -27px;
-    text-align: center;
-    margin-bottom: 20px;
+.trajectory-subtitle {
+  color: #ffffff;
+  font-size: 26px;
+  margin-top: -23px;
+  text-align: center;
+  margin-bottom: 20px;
+  margin-left: -50px;
 }
 
 .trajectory-container img {
   position: absolute;
-  height: auto; 
+  height: auto;
   transition: transform 0.3s ease;
 }
 
@@ -35,23 +37,42 @@
 .label {
   position: absolute;
   color: white;
-  font-size: 14px;
+  font-size: 18px;
   text-align: center;
   font-family: Arial, sans-serif;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
+.earth {
+  width: 200px;
+}
+.moon {
+  width: 150px;
+}
+.space_station {
+  width: 170px;
+}
+.mars {
+  width: 280px;
+}
 
-.earth { width: 180px; }
-.moon { width: 130px; }
-.space_station { width: 170px; }
-.mars { width: 200px; }
-
-.earth { top: 55%; left: 18%; }
-.moon { top: 25%; left: 38%; }
-.space_station { top: 65%; left: 50%; }
-.mars { top: 40%; left: 73%; }
+.earth {
+  top: 55%;
+  left: 18%;
+}
+.moon {
+  top: 30%;
+  left: 38%;
+}
+.space_station {
+  top: 65%;
+  left: 50%;
+}
+.mars {
+  top: 40%;
+  left: 73%;
+}
 
 .rocket {
   width: 60px;
@@ -61,82 +82,242 @@
 }
 
 .popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 20, 0.8); 
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
-    animation: fadeIn 0.3s ease-in-out;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 20, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .popup-content {
-    background: linear-gradient(145deg, #0b0c2a, #1b1c3a);
-    color: #e0e6ff; 
-    padding: 25px 20px;
-    border-radius: 15px;
-    width: 320px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(0, 150, 255, 0.6), 0 0 40px rgba(0, 200, 255, 0.4);
-    border: 1px solid rgba(0, 200, 255, 0.3);
-    animation: popupZoom 0.4s ease-out;
-    position: relative;
-    overflow: hidden;
+  background: linear-gradient(145deg, #0b0c2a, #1b1c3a);
+  color: #e0e6ff;
+  padding: 25px 20px;
+  border-radius: 15px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 150, 255, 0.6), 0 0 40px rgba(0, 200, 255, 0.4);
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  animation: popupZoom 0.4s ease-out;
+  position: relative;
+  overflow: hidden;
 }
 
 .popup-content h3 {
-    margin-top: 5px;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-    color: #4ecbff; 
-    text-shadow: 0 0 10px rgba(0, 200, 255, 0.7);
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #4ecbff;
+  text-shadow: 0 0 10px rgba(0, 200, 255, 0.7);
 }
 
 .popup-content p {
-    margin-bottom: 15px;
-    font-size: 1rem;
-    color: #cfd6ff;
-    line-height: 1.4;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  color: #cfd6ff;
+  line-height: 1.4;
 }
 
 #close-popup {
-    padding: 8px 15px;
-    border: none;
-    background: linear-gradient(45deg, #0d6efd, #4ecbff);
-    color: white;
-    cursor: pointer;
-    border-radius: 6px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+  padding: 8px 15px;
+  border: none;
+  background: linear-gradient(45deg, #0d6efd, #4ecbff);
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
 }
 
 #close-popup:hover {
-    background: linear-gradient(45deg, #0a58ca, #33b2ff);
-    box-shadow: 0 0 15px rgba(0, 200, 255, 0.7);
-    transform: scale(1.05);
+  background: linear-gradient(45deg, #0a58ca, #33b2ff);
+  box-shadow: 0 0 15px rgba(0, 200, 255, 0.7);
+  transform: scale(1.05);
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes popupZoom {
-    from { transform: scale(0.7); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 #popup-image {
-    max-width: 100%;
-    border-radius: 12px;
-    margin: 12px 0;
-    box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
-    animation: fadeIn 0.5s ease-in-out;
+  max-width: 100%;
+  border-radius: 12px;
+  margin: 12px 0;
+  box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@media screen and (max-width: 1024px) {
+  .trajectory-container {
+    position: relative;
+    padding-bottom: 60px;
+    height: 600px;
+  }
+
+  .trajectory-container .title {
+    margin-right: 0;
+    margin-bottom: 35px;
+    margin-left: 0;
+  }
+
+  .trajectory-subtitle {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .earth {
+    width: 160px;
+    top: 50%;
+    left: 13%;
+  }
+  .moon {
+    width: 110px;
+    top: 32%;
+    left: 36%;
+  }
+  .space_station {
+    width: 130px;
+    top: 73%;
+    left: 53%;
+  }
+  .mars {
+    width: 200px;
+    top: 40%;
+    left: 72%;
+  }
+  .rocket {
+    width: 45px;
+    top: 45%;
+    left: 10%;
+  }
+
+  .label {
+    font-size: 18px;
+    position: absolute;
+  }
+
+  .popup-content {
+    width: 50%;
+    padding: 15px 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 200, 255, 0.3);
+  }
+
+  .popup-content h3 {
+    font-size: 28px;
+    margin-top: 3px;
+    margin-bottom: 8px;
+  }
+
+  .popup-content p {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  #close-popup {
+    padding: 6px 12px;
+    font-size: 20px;
+    border-radius: 5px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .trajectory-container {
+    position: relative;
+    padding-bottom: 60px;
+    height: 340px;
+  }
+
+  .trajectory-container .title {
+    font-size: 33px;
+    margin-right: 0;
+    margin-bottom: 35px;
+    margin-left: 0;
+  }
+
+  .trajectory-container .trajectory-subtitle {
+    font-size: 14px;
+    margin-right: 0;
+    margin-bottom: 50px;
+    margin-left: 0;
+  }
+
+  .earth {
+    width: 100px;
+    top: 60%;
+    left: 10%;
+  }
+  .moon {
+    width: 70px;
+    top: 43%;
+    left: 36%;
+  }
+  .space_station {
+    width: 68px;
+    top: 80%;
+    left: 53%;
+  }
+  .mars {
+    width: 120px;
+    top: 45%;
+    left: 66%;
+  }
+  .rocket {
+    width: 25px;
+    top: 45%;
+    left: 10%;
+  }
+
+  .label {
+    font-size: 12px;
+  }
+
+  .popup-content {
+    width: 60%;
+    padding: 15px 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.5), 0 0 20px rgba(0, 200, 255, 0.3);
+  }
+
+  .popup-content h3 {
+    font-size: 19px;
+    margin-top: 3px;
+    margin-bottom: 8px;
+  }
+
+  .popup-content p {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  #close-popup {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+  }
 }
