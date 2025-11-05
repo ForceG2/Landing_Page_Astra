@@ -209,7 +209,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: -90px;
   }
 
   .forms-container .title {
@@ -233,7 +233,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
   .form-box {
     order: 3;
     width: 100%;
-    max-width: 420px;
+    max-width: 400px;
     padding: 30px 20px;
     margin: 0 auto;
     box-sizing: border-box;
@@ -242,11 +242,21 @@ input[type='date']::-webkit-calendar-picker-indicator {
   .form-box p{
     font-size: 12px;
   }
+
+  .form-box input{
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+  }
+
   .form-box input[type='date'] {
     width: 100%;
     padding: 12px 15px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 14px;
     font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
   }
@@ -268,7 +278,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: -90px;
   }
 
   .forms-container .title {
