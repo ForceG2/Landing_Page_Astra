@@ -1,17 +1,27 @@
-# Usa uma imagem base com Java 21
-FROM eclipse-temurin:21-jdk
+# Etapa de build
+FROM eclipse-temurin:21-jdk AS build
 
-# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos do projeto
-COPY . .
+# Copia o backend para dentro do container
+COPY ./backend .
 
-# Compila o projeto (Maven)
+# Dá permissão de execução ao Maven Wrapper
+RUN chmod +x mvnw
+
+# Compila o projeto (sem rodar testes)
 RUN ./mvnw clean package -DskipTests
 
-# Expõe a porta (Render usa variável PORT automaticamente)
+# Etapa final (somente runtime)
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+# Copia o .jar gerado da etapa de build
+COPY --from=build /app/target/*.jar app.jar
+
+# Render usa a variável de ambiente PORT automaticamente
 EXPOSE 8080
 
-# Comando para iniciar o app
-CMD ["sh", "-c", "java -jar target/*.jar --server.port=$PORT"]
+# Comando para iniciar a aplicação
+CMD ["java", "-jar", "app.jar"]
