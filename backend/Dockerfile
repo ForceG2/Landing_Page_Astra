@@ -4,7 +4,7 @@ FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
 # Copia o backend para dentro do container
-COPY ./backend .
+COPY . .
 
 # Dá permissão de execução ao Maven Wrapper
 RUN chmod +x mvnw
