@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild, AfterViewInit, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, HostListener, OnInit, OnDestroy } from '@angular/core';
 
 type BaseCard = { image: string; caption: string; details: string };
 type CardVM = BaseCard & { id: number; flipped: boolean; animating: boolean };
@@ -11,7 +11,7 @@ type CardVM = BaseCard & { id: number; flipped: boolean; animating: boolean };
   templateUrl: './attractions.html',
   styleUrl: './attractions.css',
 })
-export class Attractions implements OnInit, AfterViewInit {
+export class Attractions implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('track', { static: true }) track!: ElementRef<HTMLDivElement>;
 
   private readonly FLIP_ANIMATION_DURATION = 700;
@@ -55,7 +55,6 @@ export class Attractions implements OnInit, AfterViewInit {
     },
   ];
 
-  // estado do componente
   cards: CardVM[] = [];
   private cardWidth = 372;
   private nextId = 1;
@@ -64,9 +63,8 @@ export class Attractions implements OnInit, AfterViewInit {
   private autoScrollDirection: 'left' | 'right' | null = null;
   private lastFrameTimestamp = 0;
   private pointerDownTime = 0;
-
-  // controle de loop/teleporte
   private isTeleporting = false;
+  private boundOnScroll = this.onTrackScroll.bind(this);
 
   ngOnInit(): void {
     const repeatedCards: CardVM[] = [];
@@ -82,6 +80,18 @@ export class Attractions implements OnInit, AfterViewInit {
       const el = this.track.nativeElement;
       el.scrollLeft = this.getScrollThreshold();
     });
+    
+    this.track.nativeElement.addEventListener('scroll', this.boundOnScroll, { passive: true });
+  }
+
+  ngOnDestroy(): void {
+    this.track?.nativeElement?.removeEventListener('scroll', this.boundOnScroll);
+    if (this.holdTimerId) {
+      clearTimeout(this.holdTimerId);
+    }
+    if (this.autoScrollRafId) {
+      cancelAnimationFrame(this.autoScrollRafId);
+    }
   }
 
   trackById(_index: number, item: CardVM): number {
@@ -93,7 +103,6 @@ export class Attractions implements OnInit, AfterViewInit {
     this.updateCardWidth();
   }
 
-  // lógica de Interação com cards 
   onCardKeydown(event: KeyboardEvent, card: CardVM): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -102,16 +111,14 @@ export class Attractions implements OnInit, AfterViewInit {
   }
 
   toggleFlip(cardToToggle: CardVM): void {
-    // se o card já estiver em animação, não faz nada
+
     if (cardToToggle.animating) return;
 
-    // desvira o card que estava virado anteriormente (se houver um e não for o mesmo)    
     if (this.currentlyFlippedCardId && this.currentlyFlippedCardId !== cardToToggle.id) {
       const prev = this.cards.find(c => c.id === this.currentlyFlippedCardId);
       if (prev) this.setCardFlipState(prev, false);
     }
 
-    // vira ou desvira o card atual
     this.setCardFlipState(cardToToggle, !cardToToggle.flipped);
     this.currentlyFlippedCardId = cardToToggle.flipped ? cardToToggle.id : null;
   }
@@ -122,12 +129,12 @@ export class Attractions implements OnInit, AfterViewInit {
     setTimeout(() => (card.animating = false), this.FLIP_ANIMATION_DURATION);
   }
 
-  // scroll
   onTrackScroll(): void {
-    this.ensureLoop(this.track.nativeElement);
+    if (!this.isTeleporting) {
+      this.ensureLoop(this.track.nativeElement);
+    }
   }
 
-  // auto-scroll via hold (mouse ou toque)
   startAutoScroll(direction: 'left' | 'right'): void {
     this.pointerDownTime = Date.now();
     this.autoScrollDirection = direction;
@@ -136,7 +143,6 @@ export class Attractions implements OnInit, AfterViewInit {
     if (this.autoScrollRafId) cancelAnimationFrame(this.autoScrollRafId);
     if (this.holdTimerId) { clearTimeout(this.holdTimerId); this.holdTimerId = null; }
 
-    // delay para diferenciar clique de hold
     this.holdTimerId = window.setTimeout(() => {
       this.holdTimerId = null;
       this.track.nativeElement.style.scrollBehavior = 'auto';
@@ -192,7 +198,6 @@ export class Attractions implements OnInit, AfterViewInit {
     this.ensureLoop(el);
   }
 
-  // loop infinito
   private ensureLoop(el: HTMLElement): void {
     if (this.isTeleporting) return;
 
@@ -213,7 +218,10 @@ export class Attractions implements OnInit, AfterViewInit {
     el.style.scrollBehavior = 'auto';
     el.scrollLeft += delta;
     el.style.scrollBehavior = prev || '';
-    this.isTeleporting = false;
+  
+    setTimeout(() => {
+      this.isTeleporting = false;
+    }, 0);
   }
 
   private createCardBlock(): CardVM[] {
