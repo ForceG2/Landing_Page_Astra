@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box }
 
 .testimonials-container {
-  padding-bottom: 90px
+  padding-bottom: 40px
 }
 
 .testimonials {
@@ -145,7 +145,7 @@
 .next { right: -60px }
 
 .dots-container {
-  display: none;
+  display: block;
   text-align: center;
   padding-top: 24px; 
 }
@@ -362,10 +362,6 @@
 
   .nav { 
     display: none;
-  }
-  
-  .dots-container {
-    display: block;
   }
 
   .image-container {
