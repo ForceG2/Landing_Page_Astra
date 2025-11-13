@@ -1,4 +1,4 @@
-const url = "http://localhost:8080/email/";
+const url = "https://astra-5hp1.onrender.com/email/";
 
 export function sendEmail(formData: any) {
   return fetch(`${url}enviar`, {
