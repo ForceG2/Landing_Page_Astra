@@ -73,7 +73,6 @@
 
   .about-container .title {
     margin-bottom: 20px;
-    font-size: 32px;
     text-align: center;
     margin-left: 0;
   }
@@ -123,14 +122,12 @@
 
   .about-container .title {
     margin-bottom: 20px;
-    font-size: 33.6px;
     text-align: center;
     margin-left: 0;
   }
 
   .about-container .description {
     width: 100%;
-    font-size: 18px;
     text-align: justify;
   }
 
@@ -141,4 +138,31 @@
   .description.short {
     display: block;
   }
+}
+
+@media (max-width: 768px) {
+  .about-container .title { font-size: 2.1rem;}
+
+  .about-container .description { font-size: 1.2rem; }
+}
+
+@media (max-width: 768px) {
+  .about-container .title { font-size: 2.4rem; }
+  
+  .about-container .description { font-size: 1.4rem; }
+} 
+
+@media (min-height: 1440px) {
+  .about-container .title { font-size: 2.5rem; }
+  .about-container .description { font-size: 1.3rem; }
+}
+
+@media (min-width: 2560px) {
+  .about-container .title { font-size: 3.5rem; }
+  .about-container .description { font-size: 1.7rem; }
+}
+
+@media (min-width: 3840px) {
+  .about-container .title { font-size: 4rem; }
+  .about-container .description { font-size: 2.3rem; }
 }
