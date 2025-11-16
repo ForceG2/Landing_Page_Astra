@@ -179,10 +179,6 @@
     height: 600px;
   }
 
-  .trajectory-container .title { 
-    font-size: 2.4rem;
-  }
-
   .trajectory-container .title {
     margin-right: 0;
     margin-bottom: 35px;
@@ -258,7 +254,6 @@
   }
 
   .trajectory-container .title {
-    font-size: 2.1rem;
     margin-right: 0;
     margin-bottom: 35px;
     margin-left: 0;
@@ -324,16 +319,4 @@
     font-size: 14px;
     border-radius: 5px;
   }
-}
-
-@media (min-height: 1440px) {
-  .about-container .title { font-size: 2.5rem; }
-}
-
-@media (min-width: 2560px) {
-  .about-container .title { font-size: 3.5rem; }
-}
-
-@media (min-width: 3840px) {
-  .about-container .title { font-size: 4rem; }
 }

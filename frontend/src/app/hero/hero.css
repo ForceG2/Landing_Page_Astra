@@ -103,7 +103,6 @@
     width: 100%;
     z-index: 2;
     padding-right: 5vw;
-    font-size: 2.4rem; 
   }
 
   .hero-container .text-container {
@@ -116,7 +115,6 @@
   
   .hero-container .description {
     width: 100%;
-    font-size: 1.4rem; 
   }
 
   .hero-container .image-container {
@@ -153,12 +151,10 @@
   }
 
   .hero-container .title {
-    font-size: 2.1rem;
     margin-bottom: 0.2em;
   }
 
   .hero-container .description {
-    font-size: 1.2rem;
     text-align: left
   }
 
@@ -176,19 +172,4 @@
     max-width: 300%;
     transform: translateY(30px);
   }
-}
-
-@media (min-height: 1440px) {
-  .hero-container .title { font-size: 2.5rem; }
-  .hero-container .description { font-size: 1.3rem; }
-}
-
-@media (min-width: 2560px) {
-  .hero-container .title { font-size: 3.5rem; }
-  .hero-container .description { font-size: 1.7rem; }
-}
-
-@media (min-width: 3840px) {
-  .hero-container .title { font-size: 4rem; }
-  .hero-container .description { font-size: 2.3rem; }
 }
