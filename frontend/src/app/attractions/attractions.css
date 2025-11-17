@@ -231,10 +231,6 @@
     padding: 60px 24px; 
   }
 
-  .attractions-container .title {
-    font-size: 2.4rem;
-  }
-
   .caption {
     font-size: 1rem;
   }
@@ -254,10 +250,6 @@
     margin-top: -20vw;
   }
 
-  .attractions-container .title {
-    font-size: 2.1rem;
-  }
-
   .caption {
     font-size: 1.2rem;
   }
@@ -275,14 +267,6 @@
 }
 
 @media (min-height: 1440px) {
-  .attractions-container .title {
-    font-size: 2.5rem;
-  }
-
-  .caption {
-    font-size: 1.3rem;
-  }
-
   .attractions { padding: 100px 32px }
   .attractions-container .title { padding-bottom: 50px }
   .carousel { margin-bottom: 80px }
@@ -297,7 +281,7 @@
 
 @media (min-width: 2560px) {
   .attractions { padding: 110px 48px }
-  .attractions-container .title { font-size: 3.5rem; padding-bottom: 60px }
+  .attractions-container .title { padding-bottom: 60px }
   .carousel { margin-bottom: 90px }
   .track {
     grid-auto-columns: 420px;
@@ -311,7 +295,7 @@
 
 @media (min-width: 3840px) {
   .attractions { padding: 140px 64px }
-  .attractions-container .title { font-size: 4rem; padding-bottom: 80px }
+  .attractions-container .title { padding-bottom: 80px }
   .carousel { margin-bottom: 120px }
   .track {
     grid-auto-columns: 580px;

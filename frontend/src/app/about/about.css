@@ -10,7 +10,6 @@
 .about-container .title {
   margin-bottom: 70px;
   line-height: 1.2;
-  font-size: 45px;
   margin-top: 58px;
 }
 
@@ -45,7 +44,7 @@
   display: none;
 }
 
-@media screen and (max-width: 1024px) {
+@media (max-width: 1024px) {
   .about-container {
     flex-direction: column-reverse;
     align-items: center;
@@ -73,14 +72,12 @@
 
   .about-container .title {
     margin-bottom: 20px;
-    font-size: 32px;
     text-align: center;
     margin-left: 0;
   }
 
   .about-container .description {
     width: 100%;
-    font-size: 26px;
     text-align: center;
     margin: 0 auto;
   }
@@ -94,7 +91,7 @@
   }
 }
 
-@media screen and (max-width: 767px) {
+@media (max-width: 768px) {
   .about-container {
     flex-direction: column-reverse;
     align-items: center;
@@ -123,14 +120,12 @@
 
   .about-container .title {
     margin-bottom: 20px;
-    font-size: 33.6px;
     text-align: center;
     margin-left: 0;
   }
 
   .about-container .description {
     width: 100%;
-    font-size: 18px;
     text-align: justify;
   }
 
