@@ -192,12 +192,12 @@
 
   .earth {
     width: 160px;
-    top: 50%;
+    top: 55%;
     left: 13%;
   }
   .moon {
     width: 110px;
-    top: 32%;
+    top: 38%;
     left: 36%;
   }
   .space_station {
@@ -250,7 +250,7 @@
   .trajectory-container {
     position: relative;
     padding-bottom: 60px;
-    height: 340px;
+    height: 380px;
   }
 
   .trajectory-container .title {
@@ -269,22 +269,22 @@
 
   .earth {
     width: 100px;
-    top: 60%;
+    top: 64%;
     left: 10%;
   }
   .moon {
     width: 70px;
-    top: 43%;
+    top: 46%;
     left: 36%;
   }
   .space_station {
     width: 68px;
-    top: 80%;
+    top: 85%;
     left: 53%;
   }
   .mars {
     width: 120px;
-    top: 45%;
+    top: 50%;
     left: 66%;
   }
   .rocket {
